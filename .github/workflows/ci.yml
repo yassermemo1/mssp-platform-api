@@ -1,0 +1,254 @@
+# ===================================
+# MSSP Platform API - CI/CD Pipeline
+# Continuous Integration workflow for Node.js/NestJS application
+# ===================================
+
+name: CI Pipeline
+
+# ===================================
+# Workflow Triggers
+# ===================================
+on:
+  # Trigger on push to main and develop branches
+  push:
+    branches: 
+      - main
+      - master  # Support both main and master branch naming conventions
+      - develop
+    # Ignore pushes to documentation and configuration files that don't affect code
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'LICENSE'
+      - '.vscode/**'
+      - '.idea/**'
+
+  # Trigger on pull requests targeting main/master and develop branches
+  pull_request:
+    branches: 
+      - main
+      - master
+      - develop
+    # Ignore PRs that only change documentation
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'LICENSE'
+      - '.vscode/**'
+      - '.idea/**'
+
+  # Allow manual workflow dispatch for testing
+  workflow_dispatch:
+
+# ===================================
+# Environment Variables
+# ===================================
+env:
+  NODE_ENV: test
+  # Disable npm update notifications during CI
+  NO_UPDATE_NOTIFIER: true
+  # Disable npm funding messages
+  DISABLE_OPENCOLLECTIVE: true
+
+# ===================================
+# Jobs Definition
+# ===================================
+jobs:
+  # ===================================
+  # Build and Test Job
+  # ===================================
+  build_and_test:
+    name: Build, Format, and Test
+    runs-on: ubuntu-latest
+    
+    # ===================================
+    # Build Matrix Strategy
+    # Test against multiple Node.js versions for better compatibility
+    # ===================================
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    # ===================================
+    # Job Steps
+    # ===================================
+    steps:
+      # ===================================
+      # Step 1: Checkout Repository Code
+      # ===================================
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history for better analysis (optional)
+          fetch-depth: 0
+
+      # ===================================
+      # Step 2: Setup Node.js Environment
+      # ===================================
+      - name: 🟢 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          # Enable npm dependency caching for faster builds
+          cache: 'npm'
+          # Specify cache dependency path
+          cache-dependency-path: package-lock.json
+
+      # ===================================
+      # Step 3: Verify Node.js and npm versions
+      # ===================================
+      - name: 📋 Display Node.js and npm versions
+        run: |
+          echo "Node.js version: $(node --version)"
+          echo "npm version: $(npm --version)"
+          echo "Working directory: $(pwd)"
+
+      # ===================================
+      # Step 4: Install Dependencies
+      # Using npm ci for faster, reliable, reproducible builds
+      # ===================================
+      - name: 📦 Install dependencies
+        run: |
+          # Clean install using package-lock.json for reproducible builds
+          npm ci
+          # Verify installation
+          echo "Dependencies installed successfully"
+
+      # ===================================
+      # Step 5: Check Code Formatting
+      # ===================================
+      - name: 💅 Check Prettier formatting
+        run: |
+          # Check if code is properly formatted (don't auto-fix in CI)
+          npm run format:check
+          echo "Code formatting check completed"
+
+      # ===================================
+      # Step 6: Build Application
+      # ===================================
+      - name: 🔨 Build application
+        run: |
+          npm run build
+          echo "Build completed successfully"
+
+      # ===================================
+      # Step 7: Run Unit Tests
+      # ===================================
+      - name: 🧪 Run unit tests
+        run: |
+          npm test
+          echo "Unit tests completed successfully"
+
+      # ===================================
+      # Step 8: Run Tests with Coverage
+      # ===================================
+      - name: 📊 Run tests with coverage
+        run: |
+          npm run test:cov
+          echo "Coverage tests completed successfully"
+
+      # ===================================
+      # Step 9: Upload Coverage Artifacts
+      # ===================================
+      - name: 📁 Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        if: matrix.node-version == '20.x'  # Only upload once
+        with:
+          name: coverage-reports
+          path: coverage/
+          retention-days: 30
+
+      # ===================================
+      # Step 10: Upload Build Artifacts
+      # ===================================
+      - name: 📁 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: matrix.node-version == '20.x'  # Only upload once
+        with:
+          name: build-output
+          path: dist/
+          retention-days: 7
+
+  # ===================================
+  # Security Audit Job
+  # ===================================
+  security_audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+      # ===================================
+      # Checkout code for security scanning
+      # ===================================
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      # ===================================
+      # Setup Node.js for security audit
+      # ===================================
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      # ===================================
+      # Install dependencies for audit
+      # ===================================
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      # ===================================
+      # Run npm security audit
+      # ===================================
+      - name: 🔒 Run npm security audit
+        run: |
+          npm audit --audit-level=moderate
+          echo "Security audit completed"
+
+      # ===================================
+      # Check for outdated dependencies
+      # ===================================
+      - name: 📅 Check for outdated dependencies
+        run: |
+          npm outdated || true  # Don't fail on outdated packages, just report
+          echo "Dependency check completed"
+
+  # ===================================
+  # Code Quality Job
+  # ===================================
+  code_quality:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      # ===================================
+      # Checkout code for quality analysis
+      # ===================================
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better analysis
+
+      # ===================================
+      # Setup Node.js for quality analysis
+      # ===================================
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      # ===================================
+      # Install dependencies for analysis
+      # ===================================
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      # ===================================
+      # TypeScript Compilation Check
+      # ===================================
+      - name: 🔧 TypeScript compilation check
+        run: |
+          npx tsc --noEmit
+          echo "TypeScript compilation check completed" 

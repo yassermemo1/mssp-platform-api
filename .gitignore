@@ -1,0 +1,299 @@
+# ===================================
+# MSSP Platform API - .gitignore
+# Comprehensive ignore patterns for Node.js/NestJS/TypeScript project
+# ===================================
+
+# ===================================
+# Dependencies & Package Managers
+# ===================================
+node_modules/
+jspm_packages/
+
+# NPM
+npm-debug.log*
+.npm/
+.npmrc
+
+# Yarn
+yarn-debug.log*
+yarn-error.log*
+.yarn-integrity
+.yarn/
+.yarnrc.yml
+.pnp.*
+
+# PNPM
+pnpm-debug.log*
+.pnpm-store/
+
+# ===================================
+# Environment Variables & Secrets
+# ===================================
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging
+
+# Additional secret files
+secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+config/secrets.json
+
+# ===================================
+# Build Outputs & Compilation
+# ===================================
+dist/
+build/
+out/
+lib/
+*.tsbuildinfo
+.tscache/
+
+# Webpack
+.webpack/
+
+# Next.js (if used for admin panel later)
+.next/
+
+# ===================================
+# Logs & Runtime Data
+# ===================================
+logs/
+*.log
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ===================================
+# Testing & Coverage
+# ===================================
+coverage/
+*.lcov
+.nyc_output/
+junit.xml
+test-results/
+.coverage/
+
+# Jest
+jest-coverage/
+
+# ===================================
+# IDE & Editor Files
+# ===================================
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains IDEs (WebStorm, IntelliJ, etc.)
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Atom
+.atom/
+
+# ===================================
+# Operating System Files
+# ===================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===================================
+# Cache & Temporary Files
+# ===================================
+# ESLint
+.eslintcache
+
+# Prettier
+.prettiercache
+
+# TypeScript
+*.tsbuildinfo
+
+# Node REPL history
+.node_repl_history
+
+# Optional npm cache directory
+.npm
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Temporary folders
+tmp/
+temp/
+.tmp/
+.temp/
+
+# ===================================
+# Database & Storage
+# ===================================
+# SQLite databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Database dumps
+*.sql
+*.dump
+
+# Redis dumps
+dump.rdb
+
+# ===================================
+# Docker (for future use)
+# ===================================
+# Uncomment when Docker is added
+# Dockerfile.local
+# docker-compose.override.yml
+# .dockerignore
+
+# ===================================
+# Monitoring & Profiling
+# ===================================
+# Clinic.js
+profile/
+*clinic*
+*flamegraph*
+
+# 0x profiling
+*0x*
+
+# ===================================
+# Documentation Build
+# ===================================
+# TypeDoc
+docs/
+typedoc/
+
+# ===================================
+# Deployment & CI/CD
+# ===================================
+# Deployment artifacts
+*.zip
+*.tar.gz
+*.tar.bz2
+*.rar
+
+# Terraform (if used for infrastructure)
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Serverless Framework (if used)
+.serverless/
+
+# ===================================
+# Miscellaneous
+# ===================================
+# Lock files (choose one based on package manager preference)
+# Uncomment the ones you DON'T want to track:
+# package-lock.json  # if using yarn
+# yarn.lock          # if using npm
+# pnpm-lock.yaml     # if using npm/yarn
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Archive files (unless specifically needed)
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Runtime configuration
+.runtime/
+
+# Local development overrides
+local.json
+local.js
+local.ts
+
+# ===================================
+# Project Specific
+# ===================================
+# MSSP Platform specific ignores
+uploads/
+storage/
+public/uploads/
+*.local.json
+
+# API documentation generated files
+api-docs/
+swagger-ui/
+
+# Performance monitoring
+newrelic_agent.log
+
+# Error tracking
+.sentry/ 
