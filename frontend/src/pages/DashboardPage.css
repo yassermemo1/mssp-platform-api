@@ -1,0 +1,149 @@
+/* DashboardPage.css - Clean styling for the dashboard */
+
+.dashboard-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.dashboard-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-role {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.logout-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.logout-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dashboard-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.dashboard-content {
+  display: flex;
+  justify-content: center;
+}
+
+.welcome-card {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%;
+}
+
+.welcome-card h2 {
+  color: #333;
+  margin: 0 0 16px 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.welcome-card > p {
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+.user-details,
+.next-steps {
+  margin-top: 30px;
+}
+
+.user-details h3,
+.next-steps h3 {
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}
+
+.user-details ul,
+.next-steps ul {
+  margin: 16px 0;
+  padding-left: 20px;
+}
+
+.user-details li,
+.next-steps li {
+  color: #666;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.user-details strong {
+  color: #333;
+}
+
+.next-steps p {
+  color: #666;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .user-info {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .dashboard-main {
+    padding: 20px 10px;
+  }
+  
+  .welcome-card {
+    padding: 30px 20px;
+  }
+  
+  .welcome-card h2 {
+    font-size: 24px;
+  }
+} 

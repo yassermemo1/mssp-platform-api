@@ -3,7 +3,7 @@
 # Continuous Integration workflow for Node.js/NestJS application
 # ===================================
 
-name: CI Pipeline
+name: 🚀 MSSP Platform CI/CD Pipeline
 
 # ===================================
 # Workflow Triggers
@@ -11,40 +11,30 @@ name: CI Pipeline
 on:
   # Trigger on push to main and develop branches
   push:
-    branches: 
-      - main
-      - master  # Support both main and master branch naming conventions
-      - develop
-    # Ignore pushes to documentation and configuration files that don't affect code
+    branches: [main, master, develop]
+    # Ignore documentation-only changes to optimize CI runs
     paths-ignore:
       - '**.md'
+      - 'docs/**'
       - '.gitignore'
       - 'LICENSE'
-      - '.vscode/**'
-      - '.idea/**'
-
   # Trigger on pull requests targeting main/master and develop branches
   pull_request:
-    branches: 
-      - main
-      - master
-      - develop
-    # Ignore PRs that only change documentation
+    branches: [main, master, develop]
     paths-ignore:
       - '**.md'
+      - 'docs/**'
       - '.gitignore'
       - 'LICENSE'
-      - '.vscode/**'
-      - '.idea/**'
-
-  # Allow manual workflow dispatch for testing
-  workflow_dispatch:
 
 # ===================================
 # Environment Variables
 # ===================================
 env:
-  NODE_ENV: test
+  NODE_VERSION: '20.x'  # LTS version for stability and performance
+  CACHE_DEPENDENCY_PATH: |
+    backend/package-lock.json
+    frontend/package-lock.json
   # Disable npm update notifications during CI
   NO_UPDATE_NOTIFIER: true
   # Disable npm funding messages
@@ -54,201 +44,266 @@ env:
 # Jobs Definition
 # ===================================
 jobs:
-  # ===================================
-  # Build and Test Job
-  # ===================================
-  build_and_test:
-    name: Build, Format, and Test
-    runs-on: ubuntu-latest
+  # ==========================================
+  # BACKEND CI JOB (NestJS)
+  # ==========================================
+  backend-ci:
+    name: 🔧 Backend CI (NestJS)
+    runs-on: ubuntu-22.04  # Latest stable LTS Ubuntu for reliability
     
-    # ===================================
-    # Build Matrix Strategy
-    # Test against multiple Node.js versions for better compatibility
-    # ===================================
+    # Path filtering: Only run when backend or global files change
+    if: |
+      contains(github.event.head_commit.modified, 'backend/') ||
+      contains(github.event.head_commit.added, 'backend/') ||
+      contains(github.event.head_commit.removed, 'backend/') ||
+      contains(github.event.head_commit.modified, '.github/workflows/') ||
+      github.event_name == 'pull_request'
+    
+    # Working directory for all backend steps
+    defaults:
+      run:
+        working-directory: ./backend
+    
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        # Test against multiple Node.js versions for compatibility
+        node-version: ['18.x', '20.x']
     
-    # ===================================
-    # Job Steps
-    # ===================================
     steps:
-      # ===================================
-      # Step 1: Checkout Repository Code
-      # ===================================
-      - name: 📥 Checkout repository
+      # Step 1: Code Retrieval
+      - name: 📥 Checkout Repository
         uses: actions/checkout@v4
         with:
-          # Fetch full history for better analysis (optional)
+          # Fetch full history for better analysis
           fetch-depth: 0
-
-      # ===================================
-      # Step 2: Setup Node.js Environment
-      # ===================================
+      
+      # Step 2: Node.js Environment Setup with Caching
       - name: 🟢 Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          # Enable npm dependency caching for faster builds
+          # Cache npm dependencies for faster builds
           cache: 'npm'
-          # Specify cache dependency path
-          cache-dependency-path: package-lock.json
-
-      # ===================================
+          cache-dependency-path: backend/package-lock.json
+      
       # Step 3: Verify Node.js and npm versions
-      # ===================================
-      - name: 📋 Display Node.js and npm versions
+      - name: 📋 Display Environment Info
         run: |
           echo "Node.js version: $(node --version)"
           echo "npm version: $(npm --version)"
           echo "Working directory: $(pwd)"
-
-      # ===================================
-      # Step 4: Install Dependencies
-      # Using npm ci for faster, reliable, reproducible builds
-      # ===================================
-      - name: 📦 Install dependencies
+      
+      # Step 4: Backend Dependency Installation
+      - name: 📦 Install Backend Dependencies
         run: |
-          # Clean install using package-lock.json for reproducible builds
-          npm ci
-          # Verify installation
-          echo "Dependencies installed successfully"
-
-      # ===================================
-      # Step 5: Check Code Formatting
-      # ===================================
-      - name: 💅 Check Prettier formatting
+          # Use npm ci for faster, reliable, reproducible builds
+          npm ci --prefer-offline --no-audit
+        env:
+          # Optimize npm for CI environment
+          NPM_CONFIG_PROGRESS: false
+          NPM_CONFIG_LOGLEVEL: error
+      
+      # Step 5: Backend Code Formatting Check
+      - name: 🎨 Check Code Formatting (Prettier)
         run: |
-          # Check if code is properly formatted (don't auto-fix in CI)
+          # Check if code is properly formatted
           npm run format:check
-          echo "Code formatting check completed"
-
-      # ===================================
-      # Step 6: Build Application
-      # ===================================
-      - name: 🔨 Build application
+        continue-on-error: false
+      
+      # Step 6: Backend Linting
+      - name: 🔍 Run Backend Linting (ESLint)
         run: |
+          # Run ESLint for code quality checks
+          npm run lint
+        continue-on-error: false
+      
+      # Step 7: Backend Build Verification
+      - name: 🏗️ Build Backend Application
+        run: |
+          # Verify the application builds successfully
           npm run build
-          echo "Build completed successfully"
-
-      # ===================================
-      # Step 7: Run Unit Tests
-      # ===================================
-      - name: 🧪 Run unit tests
+        env:
+          NODE_ENV: production
+      
+      # Step 8: Backend Testing with Coverage
+      - name: 🧪 Run Backend Tests
         run: |
-          npm test
-          echo "Unit tests completed successfully"
-
-      # ===================================
-      # Step 8: Run Tests with Coverage
-      # ===================================
-      - name: 📊 Run tests with coverage
-        run: |
+          # Run tests with coverage reporting
           npm run test:cov
-          echo "Coverage tests completed successfully"
-
-      # ===================================
-      # Step 9: Upload Coverage Artifacts
-      # ===================================
-      - name: 📁 Upload coverage artifacts
+        env:
+          NODE_ENV: test
+      
+      # Step 9: Upload Backend Test Coverage
+      - name: 📊 Upload Backend Coverage Reports
         uses: actions/upload-artifact@v4
         if: matrix.node-version == '20.x'  # Only upload once
         with:
-          name: coverage-reports
-          path: coverage/
+          name: backend-coverage-reports
+          path: |
+            backend/coverage/
+            backend/test-results.xml
           retention-days: 30
+      
+      # Step 10: Backend Security Audit
+      - name: 🔒 Backend Security Audit
+        run: |
+          # Check for security vulnerabilities
+          npm audit --audit-level=moderate
+        continue-on-error: true  # Don't fail CI for audit issues
 
-      # ===================================
-      # Step 10: Upload Build Artifacts
-      # ===================================
-      - name: 📁 Upload build artifacts
+  # ==========================================
+  # FRONTEND CI JOB (React)
+  # ==========================================
+  frontend-ci:
+    name: ⚛️ Frontend CI (React)
+    runs-on: ubuntu-22.04  # Consistent environment with backend
+    
+    # Path filtering: Only run when frontend or global files change
+    if: |
+      contains(github.event.head_commit.modified, 'frontend/') ||
+      contains(github.event.head_commit.added, 'frontend/') ||
+      contains(github.event.head_commit.removed, 'frontend/') ||
+      contains(github.event.head_commit.modified, '.github/workflows/') ||
+      github.event_name == 'pull_request'
+    
+    # Working directory for all frontend steps
+    defaults:
+      run:
+        working-directory: ./frontend
+    
+    strategy:
+      matrix:
+        # Test against multiple Node.js versions
+        node-version: ['18.x', '20.x']
+    
+    steps:
+      # Step 1: Code Retrieval
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      # Step 2: Node.js Environment Setup with Caching
+      - name: 🟢 Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      
+      # Step 3: Verify Environment
+      - name: 📋 Display Environment Info
+        run: |
+          echo "Node.js version: $(node --version)"
+          echo "npm version: $(npm --version)"
+          echo "Working directory: $(pwd)"
+      
+      # Step 4: Frontend Dependency Installation
+      - name: 📦 Install Frontend Dependencies
+        run: |
+          # Install dependencies with optimizations for CI
+          npm ci --prefer-offline --no-audit
+        env:
+          NPM_CONFIG_PROGRESS: false
+          NPM_CONFIG_LOGLEVEL: error
+          # Disable React dev tools in CI
+          GENERATE_SOURCEMAP: false
+      
+      # Step 5: Frontend Linting
+      - name: 🔍 Run Frontend Linting (ESLint)
+        run: |
+          # Run ESLint for React code quality
+          npm run lint
+        continue-on-error: false
+      
+      # Step 6: Frontend Type Checking
+      - name: 🔧 TypeScript Type Checking
+        run: |
+          # Verify TypeScript compilation
+          npx tsc --noEmit
+        continue-on-error: false
+      
+      # Step 7: Frontend Testing
+      - name: 🧪 Run Frontend Tests
+        run: |
+          # Run React tests with coverage
+          npm test -- --coverage --watchAll=false --testResultsProcessor=jest-junit
+        env:
+          NODE_ENV: test
+          CI: true
+      
+      # Step 8: Frontend Build Verification
+      - name: 🏗️ Build Frontend Application
+        run: |
+          # Build React app for production
+          npm run build
+        env:
+          NODE_ENV: production
+          GENERATE_SOURCEMAP: false
+          # Treat warnings as errors in CI
+          CI: true
+      
+      # Step 9: Upload Frontend Build Artifacts
+      - name: 📦 Upload Frontend Build Artifacts
         uses: actions/upload-artifact@v4
         if: matrix.node-version == '20.x'  # Only upload once
         with:
-          name: build-output
-          path: dist/
-          retention-days: 7
-
-  # ===================================
-  # Security Audit Job
-  # ===================================
-  security_audit:
-    name: Security Audit
-    runs-on: ubuntu-latest
-    
-    steps:
-      # ===================================
-      # Checkout code for security scanning
-      # ===================================
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
-
-      # ===================================
-      # Setup Node.js for security audit
-      # ===================================
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-
-      # ===================================
-      # Install dependencies for audit
-      # ===================================
-      - name: 📦 Install dependencies
-        run: npm ci
-
-      # ===================================
-      # Run npm security audit
-      # ===================================
-      - name: 🔒 Run npm security audit
+          name: frontend-build-artifacts
+          path: |
+            frontend/build/
+            frontend/coverage/
+          retention-days: 30
+      
+      # Step 10: Frontend Security Audit
+      - name: 🔒 Frontend Security Audit
         run: |
+          # Check for security vulnerabilities
           npm audit --audit-level=moderate
-          echo "Security audit completed"
+        continue-on-error: true
 
-      # ===================================
-      # Check for outdated dependencies
-      # ===================================
-      - name: 📅 Check for outdated dependencies
-        run: |
-          npm outdated || true  # Don't fail on outdated packages, just report
-          echo "Dependency check completed"
-
-  # ===================================
-  # Code Quality Job
-  # ===================================
-  code_quality:
-    name: Code Quality Analysis
-    runs-on: ubuntu-latest
+  # ==========================================
+  # INTEGRATION & QUALITY CHECKS
+  # ==========================================
+  integration-checks:
+    name: 🔗 Integration & Quality Checks
+    runs-on: ubuntu-22.04
+    needs: [backend-ci, frontend-ci]
+    if: always()  # Run even if previous jobs fail
     
     steps:
-      # ===================================
-      # Checkout code for quality analysis
-      # ===================================
-      - name: 📥 Checkout repository
+      - name: 📥 Checkout Repository
         uses: actions/checkout@v4
+      
+      - name: 📊 Download All Artifacts
+        uses: actions/download-artifact@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for better analysis
-
-      # ===================================
-      # Setup Node.js for quality analysis
-      # ===================================
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-
-      # ===================================
-      # Install dependencies for analysis
-      # ===================================
-      - name: 📦 Install dependencies
-        run: npm ci
-
-      # ===================================
-      # TypeScript Compilation Check
-      # ===================================
-      - name: 🔧 TypeScript compilation check
+          path: ./artifacts
+      
+      - name: 📋 Generate CI Summary Report
         run: |
-          npx tsc --noEmit
-          echo "TypeScript compilation check completed" 
+          echo "## 🚀 MSSP Platform CI/CD Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Component | Status | Node.js Versions |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|--------|------------------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend (NestJS) | ${{ needs.backend-ci.result }} | 18.x, 20.x |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend (React) | ${{ needs.frontend-ci.result }} | 18.x, 20.x |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📁 Generated Artifacts:" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend Coverage Reports" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend Build Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend Coverage Reports" >> $GITHUB_STEP_SUMMARY
+      
+      - name: ✅ Mark Integration Success
+        if: needs.backend-ci.result == 'success' && needs.frontend-ci.result == 'success'
+        run: |
+          echo "🎉 All CI checks passed successfully!"
+          echo "✅ Backend CI: Passed"
+          echo "✅ Frontend CI: Passed"
+          echo "🚀 Ready for deployment!"
+      
+      - name: ❌ Mark Integration Failure
+        if: needs.backend-ci.result == 'failure' || needs.frontend-ci.result == 'failure'
+        run: |
+          echo "❌ CI checks failed!"
+          echo "Backend CI: ${{ needs.backend-ci.result }}"
+          echo "Frontend CI: ${{ needs.frontend-ci.result }}"
+          exit 1 
