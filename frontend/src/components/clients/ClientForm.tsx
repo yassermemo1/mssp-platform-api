@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CreateClientDto, UpdateClientDto, ClientStatus, Client } from '../../types/client';
+import { CustomFieldEntityType } from '../../types/customFields';
+import CustomFieldsForm from '../common/CustomFieldsForm';
 import './ClientForm.css';
 
 interface ClientFormProps {
@@ -15,6 +17,7 @@ interface ClientFormProps {
  * ClientForm Component
  * Reusable form for creating and editing clients
  * Handles validation, state management, and user feedback
+ * Now includes dynamic custom fields support
  */
 const ClientForm: React.FC<ClientFormProps> = ({
   initialData,
@@ -35,6 +38,11 @@ const ClientForm: React.FC<ClientFormProps> = ({
     status: ClientStatus.PROSPECT,
   });
 
+  // Custom fields state
+  const [customFieldValues, setCustomFieldValues] = useState<Record<string, any>>({});
+  const [customFieldsValid, setCustomFieldsValid] = useState<boolean>(true);
+  const [customFieldErrors, setCustomFieldErrors] = useState<Record<string, string>>({});
+
   // UI state
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
@@ -52,6 +60,11 @@ const ClientForm: React.FC<ClientFormProps> = ({
         industry: initialData.industry || '',
         status: initialData.status,
       });
+      
+      // Initialize custom field values
+      if (initialData.customFieldData) {
+        setCustomFieldValues(initialData.customFieldData);
+      }
     }
   }, [initialData]);
 
@@ -72,6 +85,21 @@ const ClientForm: React.FC<ClientFormProps> = ({
         [name]: ''
       }));
     }
+  };
+
+  /**
+   * Handle custom field values change
+   */
+  const handleCustomFieldsChange = (values: Record<string, any>) => {
+    setCustomFieldValues(values);
+  };
+
+  /**
+   * Handle custom field validation change
+   */
+  const handleCustomFieldsValidationChange = (isValid: boolean, errors: Record<string, string>) => {
+    setCustomFieldsValid(isValid);
+    setCustomFieldErrors(errors);
   };
 
   /**
@@ -100,7 +128,9 @@ const ClientForm: React.FC<ClientFormProps> = ({
     }
 
     setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
+    
+    // Return true only if both standard fields and custom fields are valid
+    return Object.keys(errors).length === 0 && customFieldsValid;
   };
 
   /**
@@ -131,6 +161,11 @@ const ClientForm: React.FC<ClientFormProps> = ({
       }
       if (formData.industry?.trim()) {
         submitData.industry = formData.industry.trim();
+      }
+
+      // Add custom field data if any values exist
+      if (Object.keys(customFieldValues).length > 0) {
+        submitData.customFieldData = customFieldValues;
       }
 
       await onSubmit(submitData);
@@ -279,6 +314,29 @@ const ClientForm: React.FC<ClientFormProps> = ({
           </div>
         </div>
 
+        {/* Dynamic Custom Fields Section */}
+        <CustomFieldsForm
+          entityType={CustomFieldEntityType.CLIENT}
+          initialValues={customFieldValues}
+          onValuesChange={handleCustomFieldsChange}
+          onValidationChange={handleCustomFieldsValidationChange}
+          disabled={loading}
+        />
+
+        {/* Display custom field validation errors */}
+        {Object.keys(customFieldErrors).length > 0 && (
+          <div className="custom-fields-errors">
+            <h4>Please fix the following custom field errors:</h4>
+            <ul>
+              {Object.entries(customFieldErrors).map(([field, error]) => (
+                <li key={field} className="custom-field-error-item">
+                  {error}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="form-actions">
           <button
             type="button"
@@ -291,7 +349,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
           <button
             type="submit"
             className="submit-button"
-            disabled={loading}
+            disabled={loading || !customFieldsValid}
           >
             {loading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Client' : 'Create Client')}
           </button>

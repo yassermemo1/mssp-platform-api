@@ -1,0 +1,353 @@
+/* CustomFieldRenderer Component Styles */
+
+/* Form Mode Styles */
+.custom-field-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.custom-field-label {
+  display: block;
+  font-weight: 500;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.required-indicator {
+  color: #e53e3e;
+  font-weight: 600;
+}
+
+.custom-field-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: white;
+}
+
+.custom-field-input:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.custom-field-input.error {
+  border-color: #e53e3e;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+}
+
+.custom-field-input:disabled {
+  background: #f7fafc;
+  color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.custom-field-error {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.custom-field-help-text {
+  color: #718096;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+  line-height: 1.4;
+}
+
+/* Special Input Types */
+.currency-input-wrapper,
+.percentage-input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.currency-input-wrapper:focus-within,
+.percentage-input-wrapper:focus-within {
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.currency-input-wrapper.error,
+.percentage-input-wrapper.error {
+  border-color: #e53e3e;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+}
+
+.currency-symbol,
+.percentage-symbol {
+  padding: 0.75rem;
+  background: #f7fafc;
+  color: #4a5568;
+  font-weight: 500;
+  font-size: 0.9rem;
+  border-right: 1px solid #e2e8f0;
+}
+
+.percentage-symbol {
+  border-right: none;
+  border-left: 1px solid #e2e8f0;
+}
+
+.currency-input-wrapper input,
+.percentage-input-wrapper input {
+  border: none;
+  flex: 1;
+  padding: 0.75rem;
+  background: transparent;
+}
+
+.currency-input-wrapper input:focus,
+.percentage-input-wrapper input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Checkbox Group */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-weight: 400;
+  color: #2d3748;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+.checkbox-text {
+  user-select: none;
+}
+
+.checkbox-label:hover .checkbox-text {
+  color: #3182ce;
+}
+
+/* Display Mode Styles */
+.custom-field-display {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.custom-field-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.custom-field-value {
+  color: #2d3748;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.custom-field-empty {
+  color: #a0aec0;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.custom-field-link {
+  color: #3182ce;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.custom-field-link:hover {
+  color: #2c5aa0;
+  text-decoration: underline;
+}
+
+.custom-field-help {
+  color: #718096;
+  font-size: 0.9rem;
+  cursor: help;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.custom-field-help:hover {
+  opacity: 1;
+}
+
+/* Multi-value Display */
+.multi-value-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.value-tag {
+  background: #e2e8f0;
+  color: #2d3748;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Grid Layout for Display Mode */
+.custom-fields-display-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.custom-fields-display-section {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.custom-fields-display-section h3 {
+  margin: 0 0 1rem 0;
+  color: #2d3748;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+/* Form Section for Custom Fields */
+.custom-fields-form-section {
+  background: #f8f9fa;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.custom-fields-form-section h3 {
+  margin: 0 0 1.5rem 0;
+  color: #2d3748;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+.custom-fields-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Loading and Error States */
+.custom-fields-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: #718096;
+}
+
+.custom-fields-loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e2e8f0;
+  border-top: 2px solid #3182ce;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.custom-fields-error {
+  background: #fed7d7;
+  border: 1px solid #feb2b2;
+  color: #c53030;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .custom-fields-display-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .custom-fields-form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .custom-fields-display-section,
+  .custom-fields-form-section {
+    padding: 1rem;
+  }
+  
+  .currency-input-wrapper,
+  .percentage-input-wrapper {
+    flex-direction: column;
+  }
+  
+  .currency-symbol,
+  .percentage-symbol {
+    border: none;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: center;
+  }
+  
+  .percentage-symbol {
+    border-bottom: none;
+    border-top: 1px solid #e2e8f0;
+  }
+}
+
+/* Focus and Accessibility */
+.custom-field-input:focus,
+.checkbox-label input:focus {
+  outline: 2px solid #3182ce;
+  outline-offset: 2px;
+}
+
+.custom-field-link:focus {
+  outline: 2px solid #3182ce;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .custom-field-input {
+    border-width: 2px;
+  }
+  
+  .custom-field-value {
+    font-weight: 500;
+  }
+  
+  .value-tag {
+    border: 1px solid #2d3748;
+  }
+} 

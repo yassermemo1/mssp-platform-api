@@ -13,6 +13,7 @@ export interface Contract {
   documentLink?: string | null;
   notes?: string | null;
   previousContractId?: string | null;
+  customFieldData?: Record<string, any>;
   createdAt: string;
   updatedAt: string;
   
@@ -144,6 +145,7 @@ export interface CreateContractDto {
   documentLink?: string;
   notes?: string;
   previousContractId?: string;
+  customFieldData?: Record<string, any>;
 }
 
 export interface UpdateContractDto {
@@ -157,6 +159,7 @@ export interface UpdateContractDto {
   documentLink?: string;
   notes?: string;
   previousContractId?: string;
+  customFieldData?: Record<string, any>;
 }
 
 export interface ContractQueryOptions {

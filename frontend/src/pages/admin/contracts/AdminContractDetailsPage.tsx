@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { apiService } from '../../../services/apiService';
 import { Contract, ContractStatus } from '../../../types/contract';
+import { CustomFieldEntityType } from '../../../types/customFields';
 import ServiceScopeManager from '../../../components/contracts/ServiceScopeManager';
+import CustomFieldsDisplay from '../../../components/common/CustomFieldsDisplay';
 import './AdminContractDetailsPage.css';
 
 const AdminContractDetailsPage: React.FC = () => {
@@ -247,6 +249,13 @@ const AdminContractDetailsPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Dynamic Custom Fields Display */}
+      <CustomFieldsDisplay
+        entityType={CustomFieldEntityType.CONTRACT}
+        customFieldData={contract.customFieldData}
+        title="Additional Contract Information"
+      />
 
       {/* Service Scopes Section */}
       <div className="services-section">

@@ -20,6 +20,7 @@ export interface Client {
   address?: string;
   industry?: string;
   status: ClientStatus;
+  customFieldData?: Record<string, any>;
   createdAt: string;
   updatedAt: string;
 }
@@ -32,6 +33,7 @@ export interface CreateClientDto {
   address?: string;
   industry?: string;
   status?: ClientStatus;
+  customFieldData?: Record<string, any>;
 }
 
 export interface UpdateClientDto {
@@ -42,4 +44,5 @@ export interface UpdateClientDto {
   address?: string;
   industry?: string;
   status?: ClientStatus;
+  customFieldData?: Record<string, any>;
 } 

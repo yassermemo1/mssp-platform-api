@@ -7,6 +7,8 @@ import {
   ContractStatus
 } from '../../types/contract';
 import { Client } from '../../types/client';
+import { CustomFieldEntityType } from '../../types/customFields';
+import CustomFieldsForm from '../common/CustomFieldsForm';
 import './ContractForm.css';
 
 interface ContractFormProps {
@@ -36,6 +38,11 @@ const ContractForm: React.FC<ContractFormProps> = ({
     previousContractId: '',
   });
 
+  // Custom fields state
+  const [customFieldValues, setCustomFieldValues] = useState<Record<string, any>>({});
+  const [customFieldsValid, setCustomFieldsValid] = useState<boolean>(true);
+  const [customFieldErrors, setCustomFieldErrors] = useState<Record<string, string>>({});
+
   const [clients, setClients] = useState<Client[]>([]);
   const [contracts, setContracts] = useState<Contract[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -60,6 +67,11 @@ const ContractForm: React.FC<ContractFormProps> = ({
         previousContractId: contract.previousContractId || '',
       });
       setCurrentDocumentLink(contract.documentLink || null);
+      
+      // Initialize custom field values
+      if (contract.customFieldData) {
+        setCustomFieldValues(contract.customFieldData);
+      }
     }
   }, [contract]);
 
@@ -92,6 +104,21 @@ const ContractForm: React.FC<ContractFormProps> = ({
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
+  };
+
+  /**
+   * Handle custom field values change
+   */
+  const handleCustomFieldsChange = (values: Record<string, any>) => {
+    setCustomFieldValues(values);
+  };
+
+  /**
+   * Handle custom field validation change
+   */
+  const handleCustomFieldsValidationChange = (isValid: boolean, errors: Record<string, string>) => {
+    setCustomFieldsValid(isValid);
+    setCustomFieldErrors(errors);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,7 +207,9 @@ const ContractForm: React.FC<ContractFormProps> = ({
     }
     
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    
+    // Return true only if both standard fields and custom fields are valid
+    return Object.keys(newErrors).length === 0 && customFieldsValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -208,6 +237,11 @@ const ContractForm: React.FC<ContractFormProps> = ({
         renewalDate: formData.renewalDate || undefined,
         previousContractId: formData.previousContractId || undefined,
       };
+
+      // Add custom field data if any values exist
+      if (Object.keys(customFieldValues).length > 0) {
+        submitData.customFieldData = customFieldValues;
+      }
       
       // Remove empty strings
       Object.keys(submitData).forEach(key => {
@@ -401,6 +435,29 @@ const ContractForm: React.FC<ContractFormProps> = ({
           {errors.file && <span className="error-text">{errors.file}</span>}
         </div>
 
+        {/* Dynamic Custom Fields Section */}
+        <CustomFieldsForm
+          entityType={CustomFieldEntityType.CONTRACT}
+          initialValues={customFieldValues}
+          onValuesChange={handleCustomFieldsChange}
+          onValidationChange={handleCustomFieldsValidationChange}
+          disabled={isLoading || uploadingFile}
+        />
+
+        {/* Display custom field validation errors */}
+        {Object.keys(customFieldErrors).length > 0 && (
+          <div className="custom-fields-errors">
+            <h4>Please fix the following custom field errors:</h4>
+            <ul>
+              {Object.entries(customFieldErrors).map(([field, error]) => (
+                <li key={field} className="custom-field-error-item">
+                  {error}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {errors.submit && (
           <div className="error-message">
             {errors.submit}
@@ -419,7 +476,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={isLoading || uploadingFile}
+            disabled={isLoading || uploadingFile || !customFieldsValid}
           >
             {isLoading || uploadingFile ? (
               uploadingFile ? 'Uploading...' : 'Saving...'

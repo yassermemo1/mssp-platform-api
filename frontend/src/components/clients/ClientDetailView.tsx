@@ -2,10 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Client, ClientStatus } from '../../types/client';
 import { ApiError, UserRole } from '../../types/auth';
+import { CustomFieldEntityType } from '../../types/customFields';
 import { apiService } from '../../services/apiService';
 import { useAuth } from '../../contexts/AuthContext';
 import ConfirmationModal from '../common/ConfirmationModal';
 import Toast from '../common/Toast';
+import CustomFieldsDisplay from '../common/CustomFieldsDisplay';
 import JiraTicketCountWidget from '../common/jira/JiraTicketCountWidget';
 import JiraSLAWidget from '../common/jira/JiraSLAWidget';
 import './ClientDetailView.css';
@@ -365,6 +367,13 @@ const ClientDetailView: React.FC = () => {
               )}
             </div>
           </div>
+
+          {/* Dynamic Custom Fields Display */}
+          <CustomFieldsDisplay
+            entityType={CustomFieldEntityType.CLIENT}
+            customFieldData={client.customFieldData}
+            title="Additional Client Information"
+          />
 
           <div className="detail-section">
             <h3>System Information</h3>
