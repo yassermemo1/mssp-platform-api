@@ -16,4 +16,18 @@ export { HardwareAssetStatus } from './hardware-asset-status.enum';
 export { HardwareAssignmentStatus } from './hardware-assignment-status.enum';
 export { FinancialTransactionType } from './financial-transaction-type.enum';
 export { FinancialTransactionStatus } from './financial-transaction-status.enum';
-export { ClientAssignmentRole } from './client-assignment-role.enum'; 
+export { ClientAssignmentRole } from './client-assignment-role.enum';
+export { SLAMetricType } from './sla-metric-type.enum';
+export { TicketStatus } from './ticket-status.enum';
+export { TicketPriority } from './ticket-priority.enum';
+export { ServiceMetricType } from './service-metric-type.enum';
+
+// External Integration Enums
+export { ExternalSystemType } from './external-system-type.enum';
+export { ExternalApiAuthenticationType } from './external-api-authentication-type.enum';
+export { HttpMethod } from './http-method.enum';
+export { ExpectedResponseType } from './expected-response-type.enum';
+
+// Custom Fields Enums
+export { CustomFieldEntityType } from './custom-field-entity-type.enum';
+export { CustomFieldType } from './custom-field-type.enum'; 

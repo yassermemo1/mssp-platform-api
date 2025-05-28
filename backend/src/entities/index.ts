@@ -11,4 +11,12 @@ export { Proposal } from './proposal.entity';
 export { HardwareAsset } from './hardware-asset.entity';
 export { ClientHardwareAssignment } from './client-hardware-assignment.entity';
 export { FinancialTransaction } from '../modules/financials/entities/financial-transaction.entity';
-export { ClientTeamAssignment } from '../modules/team-assignments/entities/client-team-assignment.entity'; 
+export { ClientTeamAssignment } from '../modules/team-assignments/entities/client-team-assignment.entity';
+export { SLAMetric } from './sla-metric.entity';
+export { TicketSummary } from './ticket-summary.entity';
+export { ServicePerformanceMetric } from './service-performance-metric.entity';
+export { ClientSubscriptionSnapshot } from './client-subscription-snapshot.entity';
+
+// Custom Fields Entities
+export { CustomFieldDefinition } from './custom-field-definition.entity';
+export { CustomFieldValue } from './custom-field-value.entity'; 

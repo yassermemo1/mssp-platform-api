@@ -1,0 +1,509 @@
+/* Dashboard Container */
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.refresh-button {
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.refresh-button:hover {
+  background: #2563eb;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+/* Dashboard Sections */
+.dashboard-section {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-section h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 20px 0;
+}
+
+/* Jira Integration Section - New */
+.jira-section {
+  grid-column: span 2;
+}
+
+.jira-section .jira-metrics-cards {
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.jira-section .metrics-header {
+  background: transparent;
+  border-bottom: none;
+  padding: 0 0 16px 0;
+}
+
+.jira-section .metrics-header h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* SLA Section */
+.sla-section {
+  grid-column: span 2;
+}
+
+.sla-current-month {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.metric-card {
+  background: #f3f4f6;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.metric-card h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0 0 10px 0;
+}
+
+.metric-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.metric-target {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 5px;
+}
+
+.metric-change {
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.metric-change.positive {
+  color: #10b981;
+}
+
+.metric-change.negative {
+  color: #ef4444;
+}
+
+.sla-summary-cards {
+  display: flex;
+  gap: 15px;
+}
+
+.summary-card {
+  flex: 1;
+  background: #f3f4f6;
+  padding: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.summary-card:hover {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+.summary-card.critical {
+  background: #fee2e2;
+}
+
+.summary-card.critical:hover {
+  background: #fecaca;
+}
+
+.summary-label {
+  display: block;
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.summary-value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Tickets Section */
+.tickets-section {
+  grid-column: span 1;
+}
+
+.ticket-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.ticket-card {
+  background: #f3f4f6;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.ticket-card:hover {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+}
+
+.ticket-card.total {
+  border-left-color: #6b7280;
+}
+
+.ticket-card.open {
+  border-left-color: #3b82f6;
+}
+
+.ticket-card.critical {
+  border-left-color: #ef4444;
+  background: #fee2e2;
+}
+
+.ticket-card.high {
+  border-left-color: #f59e0b;
+  background: #fef3c7;
+}
+
+.ticket-card.medium {
+  border-left-color: #10b981;
+}
+
+.ticket-card.low {
+  border-left-color: #8b5cf6;
+}
+
+.ticket-card.closed {
+  border-left-color: #6b7280;
+}
+
+.ticket-count {
+  display: block;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 5px;
+}
+
+.ticket-label {
+  display: block;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Services Section */
+.services-section {
+  grid-column: span 2;
+}
+
+.service-gauges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.service-alerts {
+  background: #fef3c7;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #f59e0b;
+}
+
+.service-alerts h3 {
+  margin: 0 0 15px 0;
+  color: #92400e;
+}
+
+.alert-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #fde68a;
+}
+
+.alert-item:last-child {
+  border-bottom: none;
+}
+
+.alert-item.critical {
+  color: #991b1b;
+}
+
+.alert-item.warning {
+  color: #92400e;
+}
+
+/* Subscription Section */
+.subscription-section {
+  grid-column: span 1;
+}
+
+.subscription-summary {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.summary-metric {
+  background: #f3f4f6;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metric-label {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Expirations Section */
+.expirations-section {
+  grid-column: span 2;
+}
+
+.expiration-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.expiration-tab h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 15px 0;
+}
+
+.expiration-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.expiration-item {
+  background: #f3f4f6;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 15px;
+  align-items: center;
+}
+
+.expiration-item:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.expiration-client {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.expiration-service {
+  color: #6b7280;
+}
+
+.expiration-days {
+  font-weight: 600;
+  color: #ef4444;
+  text-align: right;
+}
+
+/* Loading and Error States */
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-state p {
+  color: #ef4444;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.error-state button {
+  padding: 10px 20px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.error-state button:hover {
+  background: #2563eb;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .jira-section,
+  .sla-section,
+  .services-section,
+  .expirations-section {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 15px;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .dashboard-grid {
+    gap: 20px;
+  }
+  
+  .dashboard-section {
+    padding: 20px;
+  }
+  
+  .sla-current-month {
+    grid-template-columns: 1fr;
+  }
+  
+  .ticket-summary-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .service-gauges {
+    grid-template-columns: 1fr;
+  }
+  
+  .subscription-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .expiration-tabs {
+    grid-template-columns: 1fr;
+  }
+  
+  .expiration-item {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    text-align: center;
+  }
+  
+  .expiration-days {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 10px;
+  }
+  
+  .dashboard-section {
+    padding: 15px;
+  }
+  
+  .metric-card {
+    padding: 15px;
+  }
+  
+  .ticket-card {
+    padding: 15px;
+  }
+  
+  .summary-card {
+    padding: 15px;
+  }
+} 

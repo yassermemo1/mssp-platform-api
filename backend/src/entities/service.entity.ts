@@ -170,6 +170,14 @@ export class Service {
   scopeDefinitionTemplate: ScopeDefinitionTemplate | null;
 
   /**
+   * Custom field data stored as JSONB
+   * Stores values for admin-defined custom fields
+   * Format: { "field_name": "field_value", ... }
+   */
+  @Column({ type: 'jsonb', nullable: true })
+  customFieldData: Record<string, any> | null;
+
+  /**
    * Virtual property to get display name with category and delivery model
    */
   get displayName(): string {

@@ -1,0 +1,99 @@
+/* JiraTicketModal.css */
+
+.jira-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.jira-modal-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 95vw;
+  max-height: 90vh;
+  width: 1200px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.jira-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+.jira-modal-header h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.3rem;
+}
+
+.jira-modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.jira-modal-close:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.jira-modal-content {
+  flex: 1;
+  overflow: auto;
+}
+
+/* Override some styles for modal context */
+.jira-modal-content .jira-ticket-list-container {
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.jira-modal-content .jira-ticket-list-header {
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .jira-modal-backdrop {
+    padding: 10px;
+  }
+  
+  .jira-modal-container {
+    width: 100%;
+    max-height: 95vh;
+  }
+  
+  .jira-modal-header {
+    padding: 15px;
+  }
+  
+  .jira-modal-header h2 {
+    font-size: 1.1rem;
+  }
+} 

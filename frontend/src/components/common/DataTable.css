@@ -1,0 +1,347 @@
+/* DataTable Component Styles */
+
+.data-table-wrapper {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+/* Table Sizes */
+.data-table-small {
+  font-size: var(--font-size-xs);
+}
+
+.data-table-small th,
+.data-table-small td {
+  padding: var(--spacing-2) var(--spacing-3);
+}
+
+.data-table-medium th,
+.data-table-medium td {
+  padding: var(--spacing-3) var(--spacing-4);
+}
+
+.data-table-large {
+  font-size: var(--font-size-base);
+}
+
+.data-table-large th,
+.data-table-large td {
+  padding: var(--spacing-4) var(--spacing-5);
+}
+
+/* Table Header */
+.data-table thead {
+  background-color: var(--bg-tertiary);
+}
+
+.data-table th {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  text-align: left;
+  border-bottom: 2px solid var(--border-medium);
+  position: relative;
+  user-select: none;
+}
+
+.data-table th.sortable {
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.data-table th.sortable:hover {
+  background-color: var(--color-gray-200);
+}
+
+.th-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+}
+
+.th-title {
+  flex: 1;
+}
+
+.sort-icon {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  transition: color var(--transition-fast);
+  min-width: 12px;
+  text-align: center;
+}
+
+.sort-icon-asc,
+.sort-icon-desc {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Table Body */
+.data-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.data-table-striped tbody tr:nth-child(even) {
+  background-color: var(--bg-secondary);
+}
+
+.data-table-hoverable tbody tr:hover {
+  background-color: var(--color-primary-light);
+  cursor: pointer;
+}
+
+.data-table td {
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Bordered variant */
+.data-table-bordered {
+  border: 1px solid var(--border-light);
+}
+
+.data-table-bordered th,
+.data-table-bordered td {
+  border-right: 1px solid var(--border-light);
+}
+
+.data-table-bordered th:last-child,
+.data-table-bordered td:last-child {
+  border-right: none;
+}
+
+/* Text alignment */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* Loading and Empty States */
+.loading-cell,
+.empty-cell {
+  text-align: center;
+  padding: var(--spacing-16) var(--spacing-4);
+  color: var(--text-muted);
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.empty-container {
+  font-style: italic;
+  font-size: var(--font-size-base);
+}
+
+/* Pagination */
+.data-table-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4) var(--spacing-6);
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-light);
+  gap: var(--spacing-4);
+  flex-wrap: wrap;
+}
+
+.pagination-info {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.pagination-current {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.pagination-size-changer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.pagination-size-changer label {
+  white-space: nowrap;
+}
+
+.pagination-size-changer select {
+  min-width: 80px;
+}
+
+/* Action Buttons in Cells */
+.data-table .cell-actions {
+  display: flex;
+  gap: var(--spacing-2);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.data-table .cell-actions .btn {
+  min-width: auto;
+  padding: var(--spacing-1) var(--spacing-2);
+}
+
+/* Status Badges in Cells */
+.data-table .status-badge {
+  white-space: nowrap;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .data-table-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-3);
+  }
+  
+  .pagination-controls {
+    justify-content: center;
+  }
+  
+  .pagination-size-changer {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .data-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .data-table {
+    min-width: 600px;
+    font-size: var(--font-size-xs);
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+  
+  .data-table-pagination {
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+  
+  .pagination-info {
+    text-align: center;
+  }
+  
+  .th-content {
+    flex-direction: column;
+    gap: var(--spacing-1);
+    align-items: flex-start;
+  }
+  
+  .sort-icon {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .data-table {
+    min-width: 500px;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+  
+  .data-table-pagination {
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+  
+  .pagination-controls {
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+  
+  .cell-actions {
+    flex-direction: column;
+    gap: var(--spacing-1);
+  }
+  
+  .cell-actions .btn {
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-1);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .data-table-pagination {
+    display: none;
+  }
+  
+  .data-table-wrapper {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  
+  .data-table th,
+  .data-table td {
+    border: 1px solid #000;
+  }
+  
+  .data-table tbody tr:hover {
+    background-color: transparent;
+  }
+  
+  .cell-actions {
+    display: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .data-table {
+    border: 2px solid;
+  }
+  
+  .data-table th,
+  .data-table td {
+    border: 1px solid;
+  }
+  
+  .sort-icon {
+    font-weight: var(--font-weight-bold);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .data-table th,
+  .data-table tbody tr,
+  .sort-icon {
+    transition: none;
+  }
+} 

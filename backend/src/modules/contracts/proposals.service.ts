@@ -12,6 +12,9 @@ import { ServiceScope } from '../../entities/service-scope.entity';
 import { User } from '../../entities/user.entity';
 import { ProposalStatus } from '../../enums/proposal-status.enum';
 import { CreateProposalDto, UpdateProposalDto, ProposalQueryDto } from './dto';
+import { CustomFieldDefinitionService } from '../custom-fields/services/custom-field-definition.service';
+import { CustomFieldValidationService } from '../custom-fields/services/custom-field-validation.service';
+import { CustomFieldEntityType } from '../../enums';
 
 /**
  * ProposalsService
@@ -37,6 +40,8 @@ export class ProposalsService {
     private readonly serviceScopeRepository: Repository<ServiceScope>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly customFieldDefinitionService: CustomFieldDefinitionService,
+    private readonly customFieldValidationService: CustomFieldValidationService,
   ) {}
 
   /**
@@ -88,17 +93,35 @@ export class ProposalsService {
     // Validate financial data consistency
     this.validateFinancialData(createProposalDto);
 
+    // Validate custom field data if provided
+    let validatedCustomFieldData = null;
+    if (createProposalDto.customFieldData) {
+      const fieldDefinitions = await this.customFieldDefinitionService.getFieldDefinitionsMap(
+        CustomFieldEntityType.PROPOSAL
+      );
+      validatedCustomFieldData = await this.customFieldValidationService.validateCustomFieldData(
+        createProposalDto.customFieldData,
+        fieldDefinitions
+      );
+    }
+
     // Create proposal entity
-    const proposal = this.proposalRepository.create({
+    const proposalData: any = {
       ...createProposalDto,
       submittedAt: createProposalDto.submittedAt ? new Date(createProposalDto.submittedAt) : null,
       approvedAt: createProposalDto.approvedAt ? new Date(createProposalDto.approvedAt) : null,
       validUntilDate: createProposalDto.validUntilDate ? new Date(createProposalDto.validUntilDate) : null,
       status: createProposalDto.status || ProposalStatus.DRAFT,
       currency: createProposalDto.currency || 'SAR', // Default to SAR for Saudi Arabia
-    });
+    };
 
-    const savedProposal = await this.proposalRepository.save(proposal);
+    if (validatedCustomFieldData) {
+      proposalData.customFieldData = validatedCustomFieldData;
+    }
+
+    const proposal = this.proposalRepository.create(proposalData);
+
+    const savedProposal = await this.proposalRepository.save(proposal) as unknown as Proposal;
     
     this.logger.log(`Proposal created successfully with ID: ${savedProposal.id}`);
     
@@ -214,8 +237,20 @@ export class ProposalsService {
     // Validate financial data consistency
     this.validateFinancialDataForUpdate(existingProposal, updateProposalDto);
 
-    // Update entity
-    Object.assign(existingProposal, {
+    // Validate custom field data if provided
+    let validatedCustomFieldData = null;
+    if (updateProposalDto.customFieldData) {
+      const fieldDefinitions = await this.customFieldDefinitionService.getFieldDefinitionsMap(
+        CustomFieldEntityType.PROPOSAL
+      );
+      validatedCustomFieldData = await this.customFieldValidationService.validateCustomFieldData(
+        updateProposalDto.customFieldData,
+        fieldDefinitions
+      );
+    }
+
+    // Prepare update data
+    const updateData: any = {
       ...updateProposalDto,
       submittedAt: updateProposalDto.submittedAt 
         ? new Date(updateProposalDto.submittedAt) 
@@ -226,7 +261,23 @@ export class ProposalsService {
       validUntilDate: updateProposalDto.validUntilDate 
         ? new Date(updateProposalDto.validUntilDate) 
         : existingProposal.validUntilDate,
-    });
+    };
+
+    // Handle custom field data merging
+    if (validatedCustomFieldData !== null) {
+      // Merge with existing custom field data if it exists
+      if (existingProposal.customFieldData) {
+        updateData.customFieldData = {
+          ...existingProposal.customFieldData,
+          ...validatedCustomFieldData,
+        };
+      } else {
+        updateData.customFieldData = validatedCustomFieldData;
+      }
+    }
+
+    // Update entity
+    Object.assign(existingProposal, updateData);
 
     const updatedProposal = await this.proposalRepository.save(existingProposal);
     

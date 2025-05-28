@@ -1,0 +1,326 @@
+.custom-field-definition-form {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.form {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.error-message {
+  background: #fed7d7;
+  border: 1px solid #feb2b2;
+  color: #c53030;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error-icon {
+  font-size: 1.2rem;
+}
+
+.form-section {
+  margin-bottom: 2.5rem;
+}
+
+.form-section:last-of-type {
+  margin-bottom: 2rem;
+}
+
+.form-section h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.form-group label.required::after {
+  content: " *";
+  color: #e53e3e;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+  border-color: #e53e3e;
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+}
+
+.form-group input:disabled,
+.form-group select:disabled,
+.form-group textarea:disabled {
+  background: #f7fafc;
+  color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.form-group input[readonly] {
+  background: #f7fafc;
+  color: #4a5568;
+}
+
+.field-error {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.field-help {
+  color: #718096;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+  line-height: 1.4;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  transform: scale(1.1);
+}
+
+.checkbox-text {
+  user-select: none;
+}
+
+.options-input {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 1rem;
+  background: #f9fafb;
+}
+
+.add-option {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.add-option input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.add-option-button {
+  background: #3182ce;
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.add-option-button:hover:not(:disabled) {
+  background: #2c5aa0;
+}
+
+.add-option-button:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.option-text {
+  flex: 1;
+  color: #2d3748;
+}
+
+.remove-option-button {
+  background: #fed7d7;
+  color: #c53030;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.remove-option-button:hover:not(:disabled) {
+  background: #feb2b2;
+}
+
+.remove-option-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.cancel-button,
+.submit-button {
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 0.95rem;
+}
+
+.cancel-button {
+  background: #f7fafc;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+}
+
+.cancel-button:hover:not(:disabled) {
+  background: #edf2f7;
+}
+
+.submit-button {
+  background: #3182ce;
+  color: white;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: #2c5aa0;
+}
+
+.cancel-button:disabled,
+.submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .custom-field-definition-form {
+    margin: 0;
+  }
+  
+  .form {
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .cancel-button,
+  .submit-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .add-option {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .add-option-button {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .form {
+    padding: 1rem;
+  }
+  
+  .form-section h3 {
+    font-size: 1.1rem;
+  }
+  
+  .option-item {
+    padding: 0.5rem;
+  }
+} 

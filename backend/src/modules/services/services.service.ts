@@ -10,6 +10,9 @@ import { Repository, FindManyOptions, Like } from 'typeorm';
 import { Service } from '../../entities/service.entity';
 import { CreateServiceDto, UpdateServiceDto, UpdateScopeDefinitionTemplateDto } from './dto';
 import { ServiceCategory, ServiceDeliveryModel } from '../../enums';
+import { CustomFieldDefinitionService } from '../custom-fields/services/custom-field-definition.service';
+import { CustomFieldValidationService } from '../custom-fields/services/custom-field-validation.service';
+import { CustomFieldEntityType } from '../../enums';
 
 /**
  * Query options interface for filtering services
@@ -42,6 +45,8 @@ export class ServicesService {
   constructor(
     @InjectRepository(Service)
     private readonly serviceRepository: Repository<Service>,
+    private readonly customFieldDefinitionService: CustomFieldDefinitionService,
+    private readonly customFieldValidationService: CustomFieldValidationService,
   ) {}
 
   /**
@@ -68,14 +73,32 @@ export class ServicesService {
         );
       }
 
+      // Validate custom field data if provided
+      let validatedCustomFieldData = null;
+      if (createServiceDto.customFieldData) {
+        const fieldDefinitions = await this.customFieldDefinitionService.getFieldDefinitionsMap(
+          CustomFieldEntityType.SERVICE
+        );
+        validatedCustomFieldData = await this.customFieldValidationService.validateCustomFieldData(
+          createServiceDto.customFieldData,
+          fieldDefinitions
+        );
+      }
+
       // Create new service entity
-      const service = this.serviceRepository.create({
+      const serviceData: any = {
         ...createServiceDto,
         isActive: createServiceDto.isActive ?? true,
-      });
+      };
+
+      if (validatedCustomFieldData) {
+        serviceData.customFieldData = validatedCustomFieldData;
+      }
+
+      const service = this.serviceRepository.create(serviceData);
 
       // Save to database
-      const savedService = await this.serviceRepository.save(service);
+      const savedService = await this.serviceRepository.save(service) as unknown as Service;
 
       this.logger.log(`Service created successfully: ${savedService.id}`);
       return savedService;
@@ -217,8 +240,36 @@ export class ServicesService {
         }
       }
 
+      // Validate custom field data if provided
+      let validatedCustomFieldData = null;
+      if (updateServiceDto.customFieldData) {
+        const fieldDefinitions = await this.customFieldDefinitionService.getFieldDefinitionsMap(
+          CustomFieldEntityType.SERVICE
+        );
+        validatedCustomFieldData = await this.customFieldValidationService.validateCustomFieldData(
+          updateServiceDto.customFieldData,
+          fieldDefinitions
+        );
+      }
+
+      // Prepare update data
+      const updateData: any = { ...updateServiceDto };
+
+      // Handle custom field data merging
+      if (validatedCustomFieldData !== null) {
+        // Merge with existing custom field data if it exists
+        if (existingService.customFieldData) {
+          updateData.customFieldData = {
+            ...existingService.customFieldData,
+            ...validatedCustomFieldData,
+          };
+        } else {
+          updateData.customFieldData = validatedCustomFieldData;
+        }
+      }
+
       // Update the service
-      await this.serviceRepository.update(id, updateServiceDto);
+      await this.serviceRepository.update(id, updateData);
 
       // Retrieve and return the updated service
       const updatedService = await this.findOne(id);

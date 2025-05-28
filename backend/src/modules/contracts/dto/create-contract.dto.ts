@@ -10,6 +10,7 @@ import {
   Min,
   Max,
   IsUrl,
+  IsObject,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { ContractStatus } from '../../../enums/contract-status.enum';
@@ -118,4 +119,12 @@ export class CreateContractDto {
   @IsOptional()
   @IsUUID(4, { message: 'Previous contract ID must be a valid UUID' })
   previousContractId?: string;
+
+  /**
+   * Custom field data - optional
+   * Contains values for admin-defined custom fields
+   */
+  @IsOptional()
+  @IsObject()
+  customFieldData?: Record<string, any>;
 } 

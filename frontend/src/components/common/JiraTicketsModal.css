@@ -1,0 +1,287 @@
+/* JiraTicketsModal Component Styles */
+
+.jira-tickets-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.jira-tickets-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 1200px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Modal Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  line-height: 1;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.close-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Modal Content */
+.modal-content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content .jira-tickets-list {
+  box-shadow: none;
+  border-radius: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content .tickets-header {
+  display: none; /* Hide the header since we have modal header */
+}
+
+.modal-content .tickets-table-container {
+  flex: 1;
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.ticket-count {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-secondary {
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-secondary:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .jira-tickets-modal-overlay {
+    padding: 10px;
+  }
+
+  .jira-tickets-modal {
+    max-height: 95vh;
+    border-radius: 8px;
+  }
+
+  .modal-header {
+    padding: 16px 20px;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+  }
+
+  .modal-footer {
+    padding: 12px 20px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .modal-actions {
+    justify-content: center;
+  }
+
+  .ticket-count {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .jira-tickets-modal-overlay {
+    padding: 5px;
+  }
+
+  .jira-tickets-modal {
+    max-height: 98vh;
+    border-radius: 6px;
+  }
+
+  .modal-header {
+    padding: 12px 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .modal-footer {
+    padding: 12px 16px;
+  }
+}
+
+/* Accessibility */
+.jira-tickets-modal:focus {
+  outline: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .jira-tickets-modal {
+    border: 2px solid #000;
+  }
+  
+  .modal-header,
+  .modal-footer {
+    border-color: #000;
+  }
+  
+  .close-button {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .jira-tickets-modal {
+    animation: none;
+  }
+  
+  .close-button {
+    transition: none;
+  }
+  
+  .btn-secondary {
+    transition: none;
+  }
+}
+
+/* Dark mode support (if implemented) */
+@media (prefers-color-scheme: dark) {
+  .jira-tickets-modal {
+    background: #1f2937;
+    color: #f9fafb;
+  }
+  
+  .modal-header,
+  .modal-footer {
+    background: #111827;
+    border-color: #374151;
+  }
+  
+  .modal-header h2 {
+    color: #f9fafb;
+  }
+  
+  .close-button {
+    color: #9ca3af;
+  }
+  
+  .close-button:hover {
+    background: #374151;
+    color: #f3f4f6;
+  }
+  
+  .ticket-count {
+    color: #9ca3af;
+  }
+  
+  .btn-secondary {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+  }
+  
+  .btn-secondary:hover {
+    background: #4b5563;
+    border-color: #6b7280;
+  }
+} 

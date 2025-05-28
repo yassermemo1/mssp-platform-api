@@ -60,6 +60,29 @@ import {
   CreateFinancialTransactionDto,
   UpdateFinancialTransactionDto
 } from '../types/financial';
+import {
+  ClientTeamAssignment,
+  ClientTeamAssignmentWithDetails,
+  CreateTeamAssignmentDto,
+  UpdateTeamAssignmentDto,
+  TeamAssignmentFilters,
+  TeamAssignmentStats
+} from '../types/team-assignment';
+import {
+  JiraIssue,
+  TicketSummary,
+  SLASummary,
+  JiraApiResponse,
+  JiraDashboardSummary,
+  JiraTicketFilters,
+  JiraHealthStatus
+} from '../types/jira';
+import {
+  CustomFieldDefinition,
+  CreateCustomFieldDefinitionDto,
+  UpdateCustomFieldDefinitionDto,
+  CustomFieldDefinitionQueryDto,
+} from '../types/customFields';
 
 /**
  * API Service for making HTTP requests to the backend
@@ -163,6 +186,14 @@ class ApiService {
    */
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response: AxiosResponse<T> = await this.api.get(url, config);
+    return response.data;
+  }
+
+  async getRaw(url: string, config?: AxiosRequestConfig): Promise<string> {
+    const response: AxiosResponse<string> = await this.api.get(url, {
+      ...config,
+      responseType: 'text',
+    });
     return response.data;
   }
 
@@ -1244,6 +1275,309 @@ class ApiService {
       id: client.id,
       name: client.companyName
     }));
+  }
+
+  /**
+   * Team Assignment Management Methods
+   */
+
+  /**
+   * Get all team assignments with optional filtering
+   */
+  async getTeamAssignments(filters?: TeamAssignmentFilters): Promise<ClientTeamAssignmentWithDetails[]> {
+    const params = new URLSearchParams();
+    
+    if (filters?.clientId) params.append('clientId', filters.clientId);
+    if (filters?.userId) params.append('userId', filters.userId);
+    if (filters?.assignmentRole) params.append('assignmentRole', filters.assignmentRole);
+    if (filters?.isActive !== undefined) params.append('isActive', filters.isActive.toString());
+    if (filters?.assignmentDateFrom) params.append('assignmentDateFrom', filters.assignmentDateFrom);
+    if (filters?.assignmentDateTo) params.append('assignmentDateTo', filters.assignmentDateTo);
+    if (filters?.endDateFrom) params.append('endDateFrom', filters.endDateFrom);
+    if (filters?.endDateTo) params.append('endDateTo', filters.endDateTo);
+
+    const queryString = params.toString();
+    const url = queryString ? `/team-assignments?${queryString}` : '/team-assignments';
+    
+    return this.get<ClientTeamAssignmentWithDetails[]>(url);
+  }
+
+  /**
+   * Get team assignments for a specific client
+   */
+  async getClientTeamAssignments(clientId: string): Promise<ClientTeamAssignmentWithDetails[]> {
+    return this.get<ClientTeamAssignmentWithDetails[]>(`/team-assignments/client/${clientId}`);
+  }
+
+  /**
+   * Get team assignments for a specific user
+   */
+  async getUserTeamAssignments(userId: string): Promise<ClientTeamAssignmentWithDetails[]> {
+    return this.get<ClientTeamAssignmentWithDetails[]>(`/team-assignments/user/${userId}`);
+  }
+
+  /**
+   * Get a specific team assignment by ID
+   */
+  async getTeamAssignment(id: string): Promise<ClientTeamAssignmentWithDetails> {
+    return this.get<ClientTeamAssignmentWithDetails>(`/team-assignments/${id}`);
+  }
+
+  /**
+   * Create a new team assignment
+   */
+  async createTeamAssignment(assignmentData: CreateTeamAssignmentDto): Promise<ClientTeamAssignmentWithDetails> {
+    return this.post<ClientTeamAssignmentWithDetails>('/team-assignments', assignmentData);
+  }
+
+  /**
+   * Update an existing team assignment
+   */
+  async updateTeamAssignment(id: string, assignmentData: UpdateTeamAssignmentDto): Promise<ClientTeamAssignmentWithDetails> {
+    return this.patch<ClientTeamAssignmentWithDetails>(`/team-assignments/${id}`, assignmentData);
+  }
+
+  /**
+   * Delete (deactivate) a team assignment
+   */
+  async deleteTeamAssignment(id: string): Promise<ClientTeamAssignmentWithDetails> {
+    return this.delete<ClientTeamAssignmentWithDetails>(`/team-assignments/${id}`);
+  }
+
+  /**
+   * Reactivate a team assignment
+   */
+  async reactivateTeamAssignment(id: string): Promise<ClientTeamAssignmentWithDetails> {
+    return this.patch<ClientTeamAssignmentWithDetails>(`/team-assignments/${id}/reactivate`, {});
+  }
+
+  /**
+   * Get team assignment statistics
+   */
+  async getTeamAssignmentStatistics(): Promise<TeamAssignmentStats> {
+    return this.get<TeamAssignmentStats>('/team-assignments/statistics');
+  }
+
+  /**
+   * Search users for team assignment (with debouncing support)
+   */
+  async searchUsersForAssignment(searchTerm: string): Promise<Array<{
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    fullName?: string;
+    role: string;
+  }>> {
+    const params = new URLSearchParams();
+    params.append('search', searchTerm);
+    params.append('limit', '10'); // Limit results for dropdown
+    
+    const response = await this.get<{
+      message: string;
+      users: Array<{
+        id: string;
+        email: string;
+        firstName?: string;
+        lastName?: string;
+        fullName?: string;
+        role: string;
+      }>;
+    }>(`/users/search?${params.toString()}`);
+    
+    return response.users;
+  }
+
+  /**
+   * Search clients for team assignment (with debouncing support)
+   */
+  async searchClientsForAssignment(searchTerm: string): Promise<Array<{ id: string; name: string }>> {
+    const params = new URLSearchParams();
+    params.append('search', searchTerm);
+    params.append('limit', '10'); // Limit results for dropdown
+    
+    const response = await this.get<{ 
+      statusCode: number; 
+      message: string; 
+      data: Array<{ id: string; companyName: string }> 
+    }>(`/clients/search?${params.toString()}`);
+    
+    return response.data.map(client => ({
+      id: client.id,
+      name: client.companyName
+    }));
+  }
+
+  /**
+   * Jira Integration Methods
+   */
+
+  /**
+   * Get ticket summary for a specific client from Jira
+   */
+  async getJiraClientTicketSummary(clientId: string): Promise<TicketSummary> {
+    const response = await this.get<JiraApiResponse<TicketSummary>>(`/integrations/jira/clients/${clientId}/tickets/summary`);
+    return response.data;
+  }
+
+  /**
+   * Get SLA summary for a specific client from Jira
+   */
+  async getJiraClientSLASummary(clientId: string): Promise<SLASummary> {
+    const response = await this.get<JiraApiResponse<SLASummary>>(`/integrations/jira/clients/${clientId}/sla/summary`);
+    return response.data;
+  }
+
+  /**
+   * Get detailed tickets for a specific client from Jira
+   */
+  async getJiraClientTickets(clientId: string): Promise<JiraIssue[]> {
+    const response = await this.get<JiraApiResponse<JiraIssue[]>>(`/integrations/jira/clients/${clientId}/tickets`);
+    return response.data;
+  }
+
+  /**
+   * Get aggregated ticket and SLA data for multiple clients (for main dashboard)
+   */
+  async getJiraDashboardSummary(clientIds: string[]): Promise<JiraDashboardSummary> {
+    const clientIdsParam = clientIds.join(',');
+    const response = await this.get<JiraApiResponse<JiraDashboardSummary>>(`/integrations/jira/dashboard/summary?clientIds=${clientIdsParam}`);
+    return response.data;
+  }
+
+  /**
+   * Get recent tickets across all clients from Jira
+   */
+  async getJiraRecentTickets(limit: number = 50): Promise<JiraIssue[]> {
+    const response = await this.get<JiraApiResponse<JiraIssue[]>>(`/integrations/jira/tickets/recent?limit=${limit}`);
+    return response.data;
+  }
+
+  /**
+   * Get high priority tickets from Jira
+   */
+  async getJiraHighPriorityTickets(clientId?: string): Promise<JiraIssue[]> {
+    const params = new URLSearchParams();
+    if (clientId) {
+      params.append('clientId', clientId);
+    }
+    
+    const url = `/integrations/jira/tickets/high-priority${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await this.get<JiraApiResponse<JiraIssue[]>>(url);
+    return response.data;
+  }
+
+  /**
+   * Get SLA breached tickets from Jira
+   */
+  async getJiraSLABreachedTickets(clientId?: string): Promise<JiraIssue[]> {
+    const params = new URLSearchParams();
+    if (clientId) {
+      params.append('clientId', clientId);
+    }
+    
+    const url = `/integrations/jira/tickets/sla-breached${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await this.get<JiraApiResponse<JiraIssue[]>>(url);
+    return response.data;
+  }
+
+  /**
+   * Get tickets by status from Jira
+   */
+  async getJiraTicketsByStatus(status: string, clientId?: string): Promise<JiraIssue[]> {
+    const params = new URLSearchParams();
+    if (clientId) {
+      params.append('clientId', clientId);
+    }
+    
+    const url = `/integrations/jira/tickets/status/${status}${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await this.get<JiraApiResponse<JiraIssue[]>>(url);
+    return response.data;
+  }
+
+  /**
+   * Check Jira integration health
+   */
+  async checkJiraHealth(): Promise<JiraHealthStatus> {
+    const response = await this.get<JiraApiResponse<JiraHealthStatus>>('/integrations/jira/health');
+    return response.data;
+  }
+
+  /**
+   * Get Jira ticket URL for direct linking
+   */
+  getJiraTicketUrl(ticketKey: string): string {
+    // This would typically come from configuration, but for now we'll construct it
+    // In a real implementation, this should be configurable or fetched from backend
+    const jiraBaseUrl = process.env.REACT_APP_JIRA_BASE_URL || 'https://your-domain.atlassian.net';
+    return `${jiraBaseUrl}/browse/${ticketKey}`;
+  }
+
+  /**
+   * Custom Field Definitions API Methods
+   */
+
+  // Get all custom field definitions with optional filtering
+  async getCustomFieldDefinitions(params?: CustomFieldDefinitionQueryDto): Promise<{
+    data: CustomFieldDefinition[];
+    count: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
+    const queryParams = new URLSearchParams();
+    
+    if (params?.entityType) {
+      queryParams.append('entityType', params.entityType);
+    }
+    if (params?.isActive !== undefined) {
+      queryParams.append('isActive', params.isActive.toString());
+    }
+    if (params?.page) {
+      queryParams.append('page', params.page.toString());
+    }
+    if (params?.limit) {
+      queryParams.append('limit', params.limit.toString());
+    }
+
+    const url = `/admin/custom-field-definitions${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    return this.get<{
+      data: CustomFieldDefinition[];
+      count: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    }>(url);
+  }
+
+  // Get a single custom field definition by ID
+  async getCustomFieldDefinition(id: string): Promise<CustomFieldDefinition> {
+    return this.get<CustomFieldDefinition>(`/admin/custom-field-definitions/${id}`);
+  }
+
+  // Create a new custom field definition
+  async createCustomFieldDefinition(data: CreateCustomFieldDefinitionDto): Promise<CustomFieldDefinition> {
+    return this.post<CustomFieldDefinition>('/admin/custom-field-definitions', data);
+  }
+
+  // Update an existing custom field definition
+  async updateCustomFieldDefinition(id: string, data: UpdateCustomFieldDefinitionDto): Promise<CustomFieldDefinition> {
+    return this.patch<CustomFieldDefinition>(`/admin/custom-field-definitions/${id}`, data);
+  }
+
+  // Delete (soft delete) a custom field definition
+  async deleteCustomFieldDefinition(id: string): Promise<void> {
+    return this.delete(`/admin/custom-field-definitions/${id}`);
+  }
+
+  // Activate a custom field definition
+  async activateCustomFieldDefinition(id: string): Promise<CustomFieldDefinition> {
+    return this.patch<CustomFieldDefinition>(`/admin/custom-field-definitions/${id}`, { isActive: true });
+  }
+
+  // Deactivate a custom field definition
+  async deactivateCustomFieldDefinition(id: string): Promise<CustomFieldDefinition> {
+    return this.patch<CustomFieldDefinition>(`/admin/custom-field-definitions/${id}`, { isActive: false });
   }
 }
 

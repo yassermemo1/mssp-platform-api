@@ -114,4 +114,12 @@ export class CreateServiceDto {
     return value;
   })
   scopeDefinitionTemplate?: ScopeDefinitionTemplate;
+
+  /**
+   * Custom field data - optional
+   * Contains values for admin-defined custom fields
+   */
+  @IsOptional()
+  @IsObject()
+  customFieldData?: Record<string, any>;
 } 

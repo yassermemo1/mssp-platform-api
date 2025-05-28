@@ -13,6 +13,7 @@ import {
   FinancialTransaction,
   ClientTeamAssignment
 } from '../../entities';
+import { ExternalDataSource, DataSourceQuery } from '../../modules/integrations/entities';
 
 // Load environment variables
 config();
@@ -31,7 +32,20 @@ export const AppDataSource = new DataSource({
   username: configService.get('DB_USERNAME'),
   password: configService.get('DB_PASSWORD'),
   database: configService.get('DB_NAME'),
-  entities: [User, Client, Service, Contract, ServiceScope, Proposal, HardwareAsset, ClientHardwareAssignment, FinancialTransaction, ClientTeamAssignment],
+  entities: [
+    User, 
+    Client, 
+    Service, 
+    Contract, 
+    ServiceScope, 
+    Proposal, 
+    HardwareAsset, 
+    ClientHardwareAssignment, 
+    FinancialTransaction, 
+    ClientTeamAssignment,
+    ExternalDataSource,
+    DataSourceQuery
+  ],
   migrations: ['src/migrations/*{.ts,.js}'],
   migrationsTableName: 'migrations',
   synchronize: false, // Never use synchronize in production

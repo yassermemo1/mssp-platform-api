@@ -1,120 +1,121 @@
 /* ConfirmationModal Component Styles */
 
-.modal-backdrop {
+.confirmation-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(2px);
+  padding: 1rem;
 }
 
 .confirmation-modal {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   max-width: 500px;
-  width: 90%;
+  width: 100%;
   max-height: 90vh;
   overflow: hidden;
-  animation: modalSlideIn 0.3s ease-out;
+  animation: modalSlideIn 0.2s ease-out;
 }
 
 @keyframes modalSlideIn {
   from {
     opacity: 0;
-    transform: translateY(-20px) scale(0.95);
+    transform: scale(0.95) translateY(-10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1) translateY(0);
   }
 }
 
 .modal-header {
-  padding: 24px 24px 16px 24px;
-  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.5rem 0 1.5rem;
 }
 
 .modal-title {
-  margin: 0;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: #333;
-}
-
-.modal-danger .modal-title {
-  color: #e53e3e;
-}
-
-.modal-warning .modal-title {
-  color: #d69e2e;
-}
-
-.modal-info .modal-title {
-  color: #3182ce;
-}
-
-.modal-body {
-  padding: 20px 24px;
-}
-
-.modal-message {
+  color: #1a202c;
   margin: 0;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #555;
 }
 
-.modal-footer {
-  padding: 16px 24px 24px 24px;
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  border-top: 1px solid #f0f0f0;
-}
-
-.cancel-button {
-  background: #f7f7f7;
-  color: #666;
-  border: 1px solid #ddd;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 80px;
-}
-
-.cancel-button:hover:not(:disabled) {
-  background: #e8e8e8;
-  border-color: #ccc;
-}
-
-.cancel-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.confirm-button {
+.close-button {
+  background: none;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 1.5rem;
+  color: #a0aec0;
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 120px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  border-radius: 4px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.close-button:hover {
+  color: #4a5568;
+  background: #f7fafc;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-message {
+  color: #4a5568;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.cancel-button,
+.confirm-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 0.95rem;
+}
+
+.cancel-button {
+  background: #f7fafc;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+}
+
+.cancel-button:hover {
+  background: #edf2f7;
+}
+
+.confirm-button.primary {
+  background: #3182ce;
+  color: white;
+}
+
+.confirm-button.primary:hover {
+  background: #2c5aa0;
 }
 
 .confirm-button.danger {
@@ -122,59 +123,22 @@
   color: white;
 }
 
-.confirm-button.danger:hover:not(:disabled) {
+.confirm-button.danger:hover {
   background: #c53030;
 }
 
-.confirm-button.warning {
-  background: #d69e2e;
-  color: white;
-}
-
-.confirm-button.warning:hover:not(:disabled) {
-  background: #b7791f;
-}
-
-.confirm-button.info {
-  background: #3182ce;
-  color: white;
-}
-
-.confirm-button.info:hover:not(:disabled) {
-  background: #2c5aa0;
-}
-
-.confirm-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.loading-spinner-small {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top: 2px solid white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Responsive Design */
+/* Responsive design */
 @media (max-width: 480px) {
   .confirmation-modal {
-    width: 95%;
-    margin: 20px;
+    margin: 1rem;
+    max-width: calc(100vw - 2rem);
   }
   
   .modal-header,
   .modal-body,
   .modal-footer {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
   
   .modal-footer {

@@ -6,12 +6,14 @@ import { apiService } from '../../services/apiService';
 import { useAuth } from '../../contexts/AuthContext';
 import ConfirmationModal from '../common/ConfirmationModal';
 import Toast from '../common/Toast';
+import JiraTicketCountWidget from '../common/jira/JiraTicketCountWidget';
+import JiraSLAWidget from '../common/jira/JiraSLAWidget';
 import './ClientDetailView.css';
 
 /**
  * ClientDetailView Component
  * Displays detailed information for a single client
- * Includes navigation options, role-based edit access, and delete functionality
+ * Includes navigation options, role-based edit access, delete functionality, and Jira integration
  */
 const ClientDetailView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -37,6 +39,9 @@ const ClientDetailView: React.FC = () => {
     message: '',
     type: 'success'
   });
+
+  // Configuration for Jira integration
+  const jiraBaseUrl = process.env.REACT_APP_JIRA_BASE_URL || 'https://jira.company.com';
 
   /**
    * Check if user has permission to edit clients
@@ -305,74 +310,107 @@ const ClientDetailView: React.FC = () => {
       </div>
 
       <div className="client-detail-content">
-        <div className="detail-section">
-          <h3>Company Information</h3>
-          <div className="detail-grid">
-            <div className="detail-item">
-              <label>Company Name</label>
-              <span>{client.companyName}</span>
-            </div>
-            <div className="detail-item">
-              <label>Industry</label>
-              <span>{client.industry || 'Not specified'}</span>
-            </div>
-            <div className="detail-item">
-              <label>Status</label>
-              <span className={getStatusBadgeClass(client.status)}>
-                {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
-              </span>
-            </div>
-            {client.address && (
-              <div className="detail-item full-width">
-                <label>Address</label>
-                <span>{client.address}</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="detail-section">
-          <h3>Contact Information</h3>
-          <div className="detail-grid">
-            <div className="detail-item">
-              <label>Contact Name</label>
-              <span>{client.contactName}</span>
-            </div>
-            <div className="detail-item">
-              <label>Contact Email</label>
-              <span>
-                <a href={`mailto:${client.contactEmail}`} className="email-link">
-                  {client.contactEmail}
-                </a>
-              </span>
-            </div>
-            {client.contactPhone && (
+        {/* Client Information Sections */}
+        <div className="client-info-sections">
+          <div className="detail-section">
+            <h3>Company Information</h3>
+            <div className="detail-grid">
               <div className="detail-item">
-                <label>Contact Phone</label>
+                <label>Company Name</label>
+                <span>{client.companyName}</span>
+              </div>
+              <div className="detail-item">
+                <label>Industry</label>
+                <span>{client.industry || 'Not specified'}</span>
+              </div>
+              <div className="detail-item">
+                <label>Status</label>
+                <span className={getStatusBadgeClass(client.status)}>
+                  {client.status.charAt(0).toUpperCase() + client.status.slice(1)}
+                </span>
+              </div>
+              {client.address && (
+                <div className="detail-item full-width">
+                  <label>Address</label>
+                  <span>{client.address}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="detail-section">
+            <h3>Contact Information</h3>
+            <div className="detail-grid">
+              <div className="detail-item">
+                <label>Contact Name</label>
+                <span>{client.contactName}</span>
+              </div>
+              <div className="detail-item">
+                <label>Contact Email</label>
                 <span>
-                  <a href={`tel:${client.contactPhone}`} className="phone-link">
-                    {client.contactPhone}
+                  <a href={`mailto:${client.contactEmail}`} className="email-link">
+                    {client.contactEmail}
                   </a>
                 </span>
               </div>
-            )}
+              {client.contactPhone && (
+                <div className="detail-item">
+                  <label>Contact Phone</label>
+                  <span>
+                    <a href={`tel:${client.contactPhone}`} className="phone-link">
+                      {client.contactPhone}
+                    </a>
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="detail-section">
+            <h3>System Information</h3>
+            <div className="detail-grid">
+              <div className="detail-item">
+                <label>Client ID</label>
+                <span className="client-id">{client.id}</span>
+              </div>
+              <div className="detail-item">
+                <label>Created</label>
+                <span>{formatDate(client.createdAt)}</span>
+              </div>
+              <div className="detail-item">
+                <label>Last Updated</label>
+                <span>{formatDate(client.updatedAt)}</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="detail-section">
-          <h3>System Information</h3>
-          <div className="detail-grid">
-            <div className="detail-item">
-              <label>Client ID</label>
-              <span className="client-id">{client.id}</span>
+        {/* Jira Integration Section */}
+        <div className="jira-integration-section">
+          <div className="section-header">
+            <h2>Ticket Management & SLA Performance</h2>
+            <p>Real-time ticket data and SLA metrics for {client.companyName}</p>
+          </div>
+          
+          <div className="jira-widgets-grid">
+            {/* Client-Specific Ticket Counts Widget */}
+            <div className="jira-widget-container">
+              <JiraTicketCountWidget
+                clientId={client.id}
+                title={`${client.companyName} - Tickets`}
+                jiraBaseUrl={jiraBaseUrl}
+                refreshInterval={300000} // 5 minutes
+              />
             </div>
-            <div className="detail-item">
-              <label>Created</label>
-              <span>{formatDate(client.createdAt)}</span>
-            </div>
-            <div className="detail-item">
-              <label>Last Updated</label>
-              <span>{formatDate(client.updatedAt)}</span>
+
+            {/* Client-Specific SLA Performance Widget */}
+            <div className="jira-widget-container">
+              <JiraSLAWidget
+                clientId={client.id}
+                title={`${client.companyName} - SLA Performance`}
+                jiraBaseUrl={jiraBaseUrl}
+                refreshInterval={300000} // 5 minutes
+              />
             </div>
           </div>
         </div>

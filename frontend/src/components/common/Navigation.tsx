@@ -87,6 +87,12 @@ const Navigation: React.FC = () => {
               >
                 Financial Transactions
               </Link>
+              <Link 
+                to="/admin/team-assignments" 
+                className={isActive('/admin/team-assignments') ? 'nav-link active' : 'nav-link'}
+              >
+                Team Assignments
+              </Link>
             </>
           )}
 

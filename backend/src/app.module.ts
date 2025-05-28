@@ -8,6 +8,10 @@ import { FilesModule } from './modules/files/files.module';
 import { HardwareModule } from './modules/hardware/hardware.module';
 import { FinancialsModule } from './modules/financials/financials.module';
 import { TeamAssignmentsModule } from './modules/team-assignments/team-assignments.module';
+import { MetricsModule } from './modules/metrics/metrics.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { IntegrationsModule } from './modules/integrations/integrations.module';
+import { JiraIntegrationModule } from './modules/jira-integration/jira-integration.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -23,6 +27,10 @@ import { AppService } from './app.service';
  * - Imports HardwareModule for hardware inventory and asset tracking
  * - Imports FinancialsModule for financial transaction tracking
  * - Imports TeamAssignmentsModule for client team assignment management
+ * - Imports MetricsModule for dashboard metrics and reporting data
+ * - Imports DashboardModule for dashboard aggregation and client overview
+ * - Imports IntegrationsModule for external API integrations framework
+ * - Imports JiraIntegrationModule for Jira DC ticket and SLA integration
  * - Sets up basic application structure
  * - Can be extended with feature modules
  */
@@ -36,7 +44,11 @@ import { AppService } from './app.service';
     FilesModule,
     HardwareModule,
     FinancialsModule,
-    TeamAssignmentsModule
+    TeamAssignmentsModule,
+    MetricsModule,
+    DashboardModule,
+    IntegrationsModule,
+    JiraIntegrationModule
   ],
   controllers: [AppController],
   providers: [AppService],

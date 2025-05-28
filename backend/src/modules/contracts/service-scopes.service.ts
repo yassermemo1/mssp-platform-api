@@ -12,6 +12,9 @@ import { Contract } from '../../entities/contract.entity';
 import { Service } from '../../entities/service.entity';
 import { CreateServiceScopeDto, UpdateServiceScopeDto, ServiceScopeQueryDto } from './dto';
 import { SAFStatus } from '../../enums';
+import { CustomFieldDefinitionService } from '../custom-fields/services/custom-field-definition.service';
+import { CustomFieldValidationService } from '../custom-fields/services/custom-field-validation.service';
+import { CustomFieldEntityType } from '../../enums';
 
 /**
  * Interface for paginated service scope results
@@ -47,6 +50,8 @@ export class ServiceScopesService {
     private readonly contractRepository: Repository<Contract>,
     @InjectRepository(Service)
     private readonly serviceRepository: Repository<Service>,
+    private readonly customFieldDefinitionService: CustomFieldDefinitionService,
+    private readonly customFieldValidationService: CustomFieldValidationService,
   ) {}
 
   /**
@@ -104,8 +109,20 @@ export class ServiceScopesService {
         );
       }
 
+      // Validate custom field data if provided
+      let validatedCustomFieldData = null;
+      if (createServiceScopeDto.customFieldData) {
+        const fieldDefinitions = await this.customFieldDefinitionService.getFieldDefinitionsMap(
+          CustomFieldEntityType.SERVICE_SCOPE
+        );
+        validatedCustomFieldData = await this.customFieldValidationService.validateCustomFieldData(
+          createServiceScopeDto.customFieldData,
+          fieldDefinitions
+        );
+      }
+
       // Create the service scope
-      const serviceScope = this.serviceScopeRepository.create({
+      const serviceScopeData: any = {
         contractId: contractId,
         serviceId: createServiceScopeDto.serviceId,
         scopeDetails: createServiceScopeDto.scopeDetails,
@@ -121,9 +138,15 @@ export class ServiceScopesService {
           : null,
         safStatus: createServiceScopeDto.safStatus || SAFStatus.NOT_INITIATED,
         isActive: true,
-      });
+      };
 
-      const savedServiceScope = await this.serviceScopeRepository.save(serviceScope);
+      if (validatedCustomFieldData) {
+        serviceScopeData.customFieldData = validatedCustomFieldData;
+      }
+
+      const serviceScope = this.serviceScopeRepository.create(serviceScopeData);
+
+      const savedServiceScope = await this.serviceScopeRepository.save(serviceScope) as unknown as ServiceScope;
 
       this.logger.log(
         `Service scope created successfully: ${savedServiceScope.id} for contract: ${contractId}`,
@@ -350,8 +373,36 @@ export class ServiceScopesService {
         }
       }
 
+      // Validate custom field data if provided
+      let validatedCustomFieldData = null;
+      if (updateServiceScopeDto.customFieldData) {
+        const fieldDefinitions = await this.customFieldDefinitionService.getFieldDefinitionsMap(
+          CustomFieldEntityType.SERVICE_SCOPE
+        );
+        validatedCustomFieldData = await this.customFieldValidationService.validateCustomFieldData(
+          updateServiceScopeDto.customFieldData,
+          fieldDefinitions
+        );
+      }
+
+      // Prepare update data
+      const updateData: any = { ...updateServiceScopeDto };
+
+      // Handle custom field data merging
+      if (validatedCustomFieldData !== null) {
+        // Merge with existing custom field data if it exists
+        if (serviceScope.customFieldData) {
+          updateData.customFieldData = {
+            ...serviceScope.customFieldData,
+            ...validatedCustomFieldData,
+          };
+        } else {
+          updateData.customFieldData = validatedCustomFieldData;
+        }
+      }
+
       // Update the service scope
-      Object.assign(serviceScope, updateServiceScopeDto);
+      Object.assign(serviceScope, updateData);
 
       // Handle date fields
       if (updateServiceScopeDto.safServiceStartDate) {

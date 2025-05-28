@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientTeamAssignment } from './entities/client-team-assignment.entity';
+import { User } from '../../entities/user.entity';
+import { Client } from '../../entities/client.entity';
+import { TeamAssignmentsService } from './team-assignments.service';
+import { TeamAssignmentsController } from './team-assignments.controller';
 
 /**
  * Team Assignments Module
@@ -9,17 +13,13 @@ import { ClientTeamAssignment } from './entities/client-team-assignment.entity';
  */
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ClientTeamAssignment]),
+    TypeOrmModule.forFeature([ClientTeamAssignment, User, Client]),
   ],
-  controllers: [
-    // Future: TeamAssignmentsController
-  ],
-  providers: [
-    // Future: TeamAssignmentsService
-  ],
+  controllers: [TeamAssignmentsController],
+  providers: [TeamAssignmentsService],
   exports: [
     TypeOrmModule,
-    // Future: TeamAssignmentsService
+    TeamAssignmentsService,
   ],
 })
 export class TeamAssignmentsModule {} 

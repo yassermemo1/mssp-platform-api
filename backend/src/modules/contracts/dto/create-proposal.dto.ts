@@ -11,6 +11,7 @@ import {
   Min,
   Max,
   Matches,
+  IsObject,
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import { ProposalType } from '../../../enums/proposal-type.enum';
@@ -178,4 +179,12 @@ export class CreateProposalDto {
   })
   @Transform(({ value }) => value?.trim())
   notes?: string;
+
+  /**
+   * Custom field data - optional
+   * Contains values for admin-defined custom fields
+   */
+  @IsOptional()
+  @IsObject()
+  customFieldData?: Record<string, any>;
 } 

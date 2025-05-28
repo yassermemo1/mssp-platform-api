@@ -12,6 +12,9 @@ import { Client } from '../../entities/client.entity';
 import { ContractStatus } from '../../enums/contract-status.enum';
 import { CreateContractDto, UpdateContractDto, ContractQueryDto } from './dto';
 import { FilesService } from '../files/files.service';
+import { CustomFieldDefinitionService } from '../custom-fields/services/custom-field-definition.service';
+import { CustomFieldValidationService } from '../custom-fields/services/custom-field-validation.service';
+import { CustomFieldEntityType } from '../../enums';
 
 /**
  * ContractsService
@@ -24,6 +27,7 @@ import { FilesService } from '../files/files.service';
  * - Contract status updates and soft deletion
  * - Contract name uniqueness validation
  * - Pagination and filtering
+ * - Custom field validation and management
  */
 @Injectable()
 export class ContractsService {
@@ -35,11 +39,13 @@ export class ContractsService {
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
     private readonly filesService: FilesService,
+    private readonly customFieldDefinitionService: CustomFieldDefinitionService,
+    private readonly customFieldValidationService: CustomFieldValidationService,
   ) {}
 
   /**
    * Create a new contract
-   * Validates client existence, contract name uniqueness, and date logic
+   * Validates client existence, contract name uniqueness, date logic, and custom fields
    */
   async create(createContractDto: CreateContractDto, currentUser: any): Promise<Contract> {
     this.logger.log(`Creating new contract: ${createContractDto.contractName}`);
@@ -85,16 +91,33 @@ export class ContractsService {
       throw new BadRequestException('End date must be after start date');
     }
 
+    // Validate custom field data if provided
+    let validatedCustomFieldData = null;
+    if (createContractDto.customFieldData) {
+      const fieldDefinitions = await this.customFieldDefinitionService.getFieldDefinitionsMap(
+        CustomFieldEntityType.CONTRACT
+      );
+      validatedCustomFieldData = await this.customFieldValidationService.validateCustomFieldData(
+        createContractDto.customFieldData,
+        fieldDefinitions
+      );
+    }
+
     // Create contract entity
-    const contract = this.contractRepository.create({
+    const contractData: any = {
       ...createContractDto,
       startDate,
       endDate,
       renewalDate: createContractDto.renewalDate ? new Date(createContractDto.renewalDate) : null,
       status: createContractDto.status || ContractStatus.DRAFT,
-    });
+    };
 
-    const savedContract = await this.contractRepository.save(contract);
+    if (validatedCustomFieldData) {
+      contractData.customFieldData = validatedCustomFieldData;
+    }
+
+    const contract = this.contractRepository.create(contractData);
+    const savedContract = await this.contractRepository.save(contract) as unknown as Contract;
     
     this.logger.log(`Contract created successfully with ID: ${savedContract.id}`);
     
@@ -190,7 +213,7 @@ export class ContractsService {
 
   /**
    * Update an existing contract
-   * Validates uniqueness, relationships, and date logic
+   * Validates uniqueness, relationships, date logic, and custom fields
    */
   async update(
     id: string,
@@ -253,6 +276,18 @@ export class ContractsService {
       throw new BadRequestException('End date must be after start date');
     }
 
+    // Validate custom field data if provided
+    let validatedCustomFieldData = null;
+    if (updateContractDto.customFieldData) {
+      const fieldDefinitions = await this.customFieldDefinitionService.getFieldDefinitionsMap(
+        CustomFieldEntityType.CONTRACT
+      );
+      validatedCustomFieldData = await this.customFieldValidationService.validateCustomFieldData(
+        updateContractDto.customFieldData,
+        fieldDefinitions
+      );
+    }
+
     // Prepare update data with proper type conversion
     const updateData: Partial<Contract> = {};
 
@@ -277,6 +312,19 @@ export class ContractsService {
     }
     if (updateContractDto.previousContractId !== undefined) {
       updateData.previousContractId = updateContractDto.previousContractId;
+    }
+
+    // Handle custom field data
+    if (validatedCustomFieldData !== null) {
+      // Merge with existing custom field data if it exists
+      if (existingContract.customFieldData) {
+        updateData.customFieldData = {
+          ...existingContract.customFieldData,
+          ...validatedCustomFieldData,
+        };
+      } else {
+        updateData.customFieldData = validatedCustomFieldData;
+      }
     }
 
     // Convert date strings to Date objects if provided

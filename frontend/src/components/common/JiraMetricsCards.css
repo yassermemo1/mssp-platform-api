@@ -1,0 +1,321 @@
+/* JiraMetricsCards Component Styles */
+
+.jira-metrics-cards {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.metrics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.metrics-header h3 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.jira-badge {
+  background: #3b82f6;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.jira-badge span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.jira-badge span::before {
+  content: "🔗";
+  font-size: 10px;
+}
+
+.client-info {
+  padding: 12px 20px;
+  background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Loading and Error States */
+.loading-state,
+.error-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-state p {
+  margin: 8px 0;
+}
+
+.error-details {
+  font-size: 14px;
+  color: #ef4444;
+  font-family: monospace;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+/* Metric Cards */
+.metric-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.metric-card.clickable {
+  cursor: pointer;
+}
+
+.metric-card.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: #3b82f6;
+}
+
+.metric-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.metric-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.metric-trend {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.3;
+}
+
+.metric-detail {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Status-specific card styles */
+.metric-card.status-open {
+  border-left: 4px solid #3b82f6;
+}
+
+.metric-card.status-open .metric-value {
+  color: #3b82f6;
+}
+
+.metric-card.status-progress {
+  border-left: 4px solid #f59e0b;
+}
+
+.metric-card.status-progress .metric-value {
+  color: #f59e0b;
+}
+
+.metric-card.status-resolved {
+  border-left: 4px solid #10b981;
+}
+
+.metric-card.status-resolved .metric-value {
+  color: #10b981;
+}
+
+.metric-card.priority-high {
+  border-left: 4px solid #ef4444;
+  background: #fef2f2;
+}
+
+.metric-card.priority-high .metric-value {
+  color: #ef4444;
+}
+
+/* SLA-specific card styles */
+.metric-card.sla-card {
+  border-left: 4px solid #8b5cf6;
+}
+
+.metric-card.sla-card .metric-value {
+  color: #8b5cf6;
+}
+
+.metric-card.sla-breach {
+  border-left: 4px solid #ef4444;
+  background: #fef2f2;
+}
+
+.metric-card.sla-breach .metric-value {
+  color: #ef4444;
+}
+
+.metric-card.sla-breach .metric-trend {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+/* Empty State */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+}
+
+.empty-state p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .metrics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .metric-card {
+    padding: 12px;
+  }
+
+  .metric-value {
+    font-size: 24px;
+  }
+
+  .metric-label {
+    font-size: 13px;
+  }
+
+  .metric-trend {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .metrics-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .metric-card {
+    padding: 16px;
+  }
+
+  .metric-value {
+    font-size: 28px;
+  }
+}
+
+/* Animation for metric value changes */
+.metric-value {
+  transition: all 0.3s ease;
+}
+
+.metric-card:hover .metric-value {
+  transform: scale(1.05);
+}
+
+/* Accessibility */
+.metric-card.clickable:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.metric-card.clickable:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .metric-card {
+    border-width: 2px;
+  }
+  
+  .metric-value {
+    font-weight: 800;
+  }
+  
+  .jira-badge {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .metric-card {
+    transition: none;
+  }
+  
+  .metric-card.clickable:hover {
+    transform: none;
+  }
+  
+  .loading-spinner {
+    animation: none;
+  }
+  
+  .metric-value {
+    transition: none;
+  }
+  
+  .metric-card:hover .metric-value {
+    transform: none;
+  }
+} 

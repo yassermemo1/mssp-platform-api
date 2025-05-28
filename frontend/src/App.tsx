@@ -1,11 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ToastProvider } from './components/common/ToastProvider';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import Navigation from './components/common/Navigation';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import OperationalDashboard from './pages/admin/Dashboard';
+import ClientOverview from './pages/admin/clients/ClientOverview';
 import ClientsListPage from './pages/ClientsListPage';
 import CreateClientPage from './pages/CreateClientPage';
 import ClientDetailsPage from './pages/ClientDetailsPage';
@@ -37,6 +40,15 @@ import FinancialTransactionFormPage from './pages/admin/financials/transactions/
 import ProposalDashboard from './pages/admin/proposals/ProposalDashboard';
 import ProposalListPage from './pages/admin/proposals/ProposalListPage';
 import ProposalEditPage from './pages/admin/proposals/ProposalEditPage';
+// Team Assignment imports
+import AdminTeamAssignmentsListPage from './pages/admin/team-assignments/AdminTeamAssignmentsListPage';
+import CreateTeamAssignmentPage from './pages/admin/team-assignments/CreateTeamAssignmentPage';
+import EditTeamAssignmentPage from './pages/admin/team-assignments/EditTeamAssignmentPage';
+// Custom Fields imports
+import AdminCustomFieldsPage from './pages/admin/custom-fields/AdminCustomFieldsPage';
+import AdminCustomFieldsEntityPage from './pages/admin/custom-fields/AdminCustomFieldsEntityPage';
+import AdminCustomFieldCreatePage from './pages/admin/custom-fields/AdminCustomFieldCreatePage';
+import AdminCustomFieldEditPage from './pages/admin/custom-fields/AdminCustomFieldEditPage';
 import './App.css';
 
 /**
@@ -57,6 +69,14 @@ const AuthenticatedApp: React.FC = () => {
           element={
             <ProtectedRoute>
               <DashboardPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/admin/dashboard" 
+          element={
+            <ProtectedRoute>
+              <OperationalDashboard />
             </ProtectedRoute>
           } 
         />
@@ -89,6 +109,14 @@ const AuthenticatedApp: React.FC = () => {
           element={
             <ProtectedRoute>
               <EditClientPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/admin/clients/:id/overview" 
+          element={
+            <ProtectedRoute>
+              <ClientOverview />
             </ProtectedRoute>
           } 
         />
@@ -288,6 +316,36 @@ const AuthenticatedApp: React.FC = () => {
             </ProtectedRoute>
           } 
         />
+        {/* Team Assignment Routes */}
+        <Route 
+          path="/admin/team-assignments" 
+          element={
+            <ProtectedRoute>
+              <AdminTeamAssignmentsListPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/admin/team-assignments/new" 
+          element={
+            <ProtectedRoute>
+              <CreateTeamAssignmentPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/admin/team-assignments/:id/edit" 
+          element={
+            <ProtectedRoute>
+              <EditTeamAssignmentPage />
+            </ProtectedRoute>
+          } 
+        />
+        {/* Custom Fields Management Routes */}
+        <Route path="/admin/settings/custom-fields" element={<AdminCustomFieldsPage />} />
+        <Route path="/admin/settings/custom-fields/:entityType" element={<AdminCustomFieldsEntityPage />} />
+        <Route path="/admin/settings/custom-fields/:entityType/new" element={<AdminCustomFieldCreatePage />} />
+        <Route path="/admin/settings/custom-fields/edit/:definitionId" element={<AdminCustomFieldEditPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
@@ -329,11 +387,13 @@ const RegisterRedirect: React.FC = () => {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="App">
-          <AuthenticatedApp />
-        </div>
-      </Router>
+      <ToastProvider position="top-right" maxToasts={5}>
+        <Router>
+          <div className="App">
+            <AuthenticatedApp />
+          </div>
+        </Router>
+      </ToastProvider>
     </AuthProvider>
   );
 }

@@ -92,6 +92,14 @@ export class Contract {
   notes: string | null;
 
   /**
+   * Custom field data stored as JSONB
+   * Stores values for admin-defined custom fields
+   * Format: { "field_name": "field_value", ... }
+   */
+  @Column({ type: 'jsonb', nullable: true })
+  customFieldData: Record<string, any> | null;
+
+  /**
    * Foreign key to Client
    */
   @Column({ type: 'uuid', nullable: false })

@@ -83,6 +83,21 @@ export class Client {
   clientSource: ClientSourceType | null;
 
   /**
+   * Jira project key for integration
+   * Maps this client to a specific Jira project
+   */
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  jiraProjectKey: string | null;
+
+  /**
+   * Custom field data stored as JSONB
+   * Stores values for admin-defined custom fields
+   * Format: { "field_name": "field_value", ... }
+   */
+  @Column({ type: 'jsonb', nullable: true })
+  customFieldData: Record<string, any> | null;
+
+  /**
    * Timestamp when the client was created
    */
   @CreateDateColumn({

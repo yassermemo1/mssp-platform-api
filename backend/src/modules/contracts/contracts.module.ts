@@ -14,6 +14,7 @@ import { ProposalsService } from './proposals.service';
 import { ProposalsController } from './proposals.controller';
 import { ServicesModule } from '../services/services.module';
 import { FilesModule } from '../files/files.module';
+import { CustomFieldsModule } from '../custom-fields/custom-fields.module';
 
 /**
  * ContractsModule
@@ -34,6 +35,7 @@ import { FilesModule } from '../files/files.module';
     TypeOrmModule.forFeature([Contract, ServiceScope, Proposal, Client, Service, User]),
     ServicesModule, // Import to access services for scope creation
     FilesModule, // Import for file upload functionality
+    CustomFieldsModule, // Import for custom field validation
   ],
   controllers: [
     ContractsController, 

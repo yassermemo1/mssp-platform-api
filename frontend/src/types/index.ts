@@ -3,4 +3,5 @@ export * from './client';
 export * from './contract';
 export * from './service';
 export * from './hardware';
-export * from './financial'; 
+export * from './financial';
+export * from './team-assignment'; 

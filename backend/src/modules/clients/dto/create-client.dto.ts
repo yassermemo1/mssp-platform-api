@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   MaxLength,
   MinLength,
+  IsObject,
 } from 'class-validator';
 import { ClientStatus } from '../../../enums/client-status.enum';
 
@@ -71,4 +72,12 @@ export class CreateClientDto {
     message: 'Status must be one of: prospect, active, inactive, expired, renewed',
   })
   status?: ClientStatus;
+
+  /**
+   * Custom field data - optional
+   * Contains values for admin-defined custom fields
+   */
+  @IsOptional()
+  @IsObject()
+  customFieldData?: Record<string, any>;
 } 

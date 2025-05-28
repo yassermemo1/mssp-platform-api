@@ -11,9 +11,12 @@ import {
   HttpCode,
   HttpStatus,
   Logger,
+  Query,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { ClientsService } from './clients.service';
-import { CreateClientDto, UpdateClientDto } from './dto';
+import { CreateClientDto, UpdateClientDto, QueryClientDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -55,19 +58,51 @@ export class ClientsController {
   }
 
   /**
-   * Retrieve all clients
+   * Retrieve all clients with advanced filtering
    * GET /clients
    * Requires: Any authenticated user
-   * Returns: 200 OK with array of clients
+   * Returns: 200 OK with paginated array of clients
    */
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(@Request() req: any): Promise<Client[]> {
+  async findAll(
+    @Query() queryDto: QueryClientDto,
+    @Request() req: any,
+  ): Promise<{ data: Client[], total: number, page: number, limit: number }> {
     this.logger.log(
-      `GET /clients - Retrieving all clients by user: ${req.user.email}`,
+      `GET /clients - Retrieving clients with filters by user: ${req.user.email}`,
     );
 
-    return this.clientsService.findAll();
+    return this.clientsService.findAll(queryDto);
+  }
+
+  /**
+   * Export clients to CSV
+   * GET /clients/export/csv
+   * Requires: ADMIN or MANAGER role
+   * Returns: CSV file download
+   */
+  @Get('export/csv')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @HttpCode(HttpStatus.OK)
+  async exportToCsv(
+    @Query() queryDto: QueryClientDto,
+    @Res() res: Response,
+    @Request() req: any,
+  ): Promise<void> {
+    this.logger.log(
+      `GET /clients/export/csv - Exporting clients to CSV by user: ${req.user.email}`,
+    );
+
+    const csvData = await this.clientsService.exportToCsv(queryDto);
+    
+    const timestamp = new Date().toISOString().split('T')[0];
+    const filename = `clients_export_${timestamp}.csv`;
+    
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(csvData);
   }
 
   /**

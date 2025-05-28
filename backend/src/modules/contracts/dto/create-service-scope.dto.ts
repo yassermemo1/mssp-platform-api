@@ -128,4 +128,12 @@ export class CreateServiceScopeDto {
     message: `SAF status must be one of: ${Object.values(SAFStatus).join(', ')}`,
   })
   safStatus?: SAFStatus;
+
+  /**
+   * Custom field data - optional
+   * Contains values for admin-defined custom fields
+   */
+  @IsOptional()
+  @IsObject()
+  customFieldData?: Record<string, any>;
 } 

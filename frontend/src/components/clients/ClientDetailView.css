@@ -2,7 +2,7 @@
 
 .client-detail-container {
   padding: 20px;
-  max-width: 1000px;
+  max-width: 1400px; /* Increased to accommodate Jira widgets */
   margin: 0 auto;
 }
 
@@ -195,14 +195,57 @@
 .client-detail-content {
   display: flex;
   flex-direction: column;
+  gap: 40px; /* Increased gap for better separation */
+}
+
+/* Client Information Sections */
+.client-info-sections {
+  display: flex;
+  flex-direction: column;
   gap: 30px;
+}
+
+/* Jira Integration Section */
+.jira-integration-section {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 30px;
+  border: 1px solid #e9ecef;
+}
+
+.section-header {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.section-header h2 {
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.section-header p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+.jira-widgets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 25px;
+}
+
+.jira-widget-container {
+  /* Individual widget styling is handled by the widget components */
 }
 
 .detail-section {
   background: white;
   border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #e0e0e0;
 }
 
@@ -211,7 +254,7 @@
   color: #333;
   font-size: 20px;
   font-weight: 600;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid #667eea;
   padding-bottom: 10px;
 }
 
@@ -224,7 +267,7 @@
 .detail-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .detail-item.full-width {
@@ -248,12 +291,13 @@
 .client-id {
   font-family: 'Courier New', monospace;
   background: #f8f9fa;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
   font-size: 14px;
+  color: #666;
 }
 
-/* Links */
 .email-link,
 .phone-link {
   color: #667eea;
@@ -263,135 +307,165 @@
 
 .email-link:hover,
 .phone-link:hover {
-  color: #5a67d8;
+  color: #764ba2;
   text-decoration: underline;
 }
 
 /* Status Badges */
 .status-badge {
-  padding: 6px 16px;
+  display: inline-block;
+  padding: 6px 12px;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  display: inline-block;
 }
 
 .status-active {
-  background: #c6f6d5;
-  color: #2f855a;
+  background: #d4edda;
+  color: #155724;
 }
 
 .status-prospect {
-  background: #bee3f8;
-  color: #2c5aa0;
+  background: #d1ecf1;
+  color: #0c5460;
 }
 
 .status-inactive {
-  background: #fed7d7;
-  color: #c53030;
+  background: #f8d7da;
+  color: #721c24;
 }
 
 .status-expired {
-  background: #fbb6ce;
-  color: #97266d;
+  background: #fff3cd;
+  color: #856404;
 }
 
 /* Permission Notice */
 .permission-notice {
-  background: #fff8e1;
-  border: 1px solid #ffcc02;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
   border-radius: 8px;
-  padding: 16px;
+  padding: 15px;
   margin-top: 20px;
 }
 
 .permission-notice p {
   margin: 0;
-  color: #b7791f;
+  color: #856404;
   font-size: 14px;
-  line-height: 1.5;
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .jira-widgets-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   .client-detail-container {
     padding: 15px;
   }
-  
+
   .client-detail-header {
     flex-direction: column;
     gap: 20px;
     align-items: stretch;
   }
-  
+
   .header-left h2 {
-    font-size: 28px;
+    font-size: 24px;
   }
-  
+
   .header-actions {
-    justify-content: stretch;
+    justify-content: center;
   }
-  
+
   .back-button,
   .edit-button,
-  .delete-button {
+  .delete-button,
+  .view-licenses-button {
     flex: 1;
-    text-align: center;
+    min-width: 120px;
   }
-  
+
   .detail-section {
     padding: 20px;
   }
-  
+
   .detail-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 15px;
   }
-  
+
   .detail-item.full-width {
     grid-column: 1;
+  }
+
+  .jira-integration-section {
+    padding: 20px;
+  }
+
+  .section-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .jira-widgets-grid {
+    gap: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .client-detail-header {
-    gap: 15px;
+    text-align: center;
   }
-  
+
   .header-left h2 {
-    font-size: 24px;
+    font-size: 20px;
   }
-  
+
   .header-actions {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .back-button,
   .edit-button,
-  .delete-button {
+  .delete-button,
+  .view-licenses-button {
     width: 100%;
-    padding: 12px 20px;
   }
-  
+
   .detail-section {
-    padding: 16px;
+    padding: 15px;
   }
-  
+
   .detail-section h3 {
     font-size: 18px;
   }
-  
+
   .error-actions {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .retry-button,
   .back-button {
     width: 100%;
     max-width: 200px;
+  }
+
+  .jira-integration-section {
+    padding: 15px;
+  }
+
+  .section-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .section-header p {
+    font-size: 0.9rem;
   }
 } 

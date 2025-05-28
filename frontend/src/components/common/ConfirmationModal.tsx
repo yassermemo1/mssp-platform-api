@@ -5,56 +5,71 @@ interface ConfirmationModalProps {
   isOpen: boolean;
   title: string;
   message: string;
-  confirmText?: string;
-  cancelText?: string;
   onConfirm: () => void;
   onCancel: () => void;
-  loading?: boolean;
-  variant?: 'danger' | 'warning' | 'info';
+  confirmText?: string;
+  cancelText?: string;
+  confirmVariant?: 'primary' | 'danger';
 }
 
 /**
  * ConfirmationModal Component
- * Reusable modal for confirming destructive actions
- * Provides clear messaging and prevents accidental actions
+ * Reusable modal for confirming user actions
  */
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
   title,
   message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
   onConfirm,
   onCancel,
-  loading = false,
-  variant = 'danger'
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  confirmVariant = 'primary',
 }) => {
   if (!isOpen) return null;
 
+  /**
+   * Handle backdrop click
+   */
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onCancel();
     }
   };
 
-  const getVariantClass = () => {
-    switch (variant) {
-      case 'danger':
-        return 'modal-danger';
-      case 'warning':
-        return 'modal-warning';
-      case 'info':
-        return 'modal-info';
-      default:
-        return 'modal-danger';
+  /**
+   * Handle escape key
+   */
+  React.useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onCancel();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
     }
-  };
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onCancel]);
 
   return (
-    <div className="modal-backdrop" onClick={handleBackdropClick}>
-      <div className={`confirmation-modal ${getVariantClass()}`}>
+    <div className="confirmation-modal-overlay" onClick={handleBackdropClick}>
+      <div className="confirmation-modal">
         <div className="modal-header">
           <h3 className="modal-title">{title}</h3>
+          <button
+            onClick={onCancel}
+            className="close-button"
+            aria-label="Close modal"
+          >
+            ×
+          </button>
         </div>
         
         <div className="modal-body">
@@ -63,27 +78,16 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         
         <div className="modal-footer">
           <button
-            type="button"
-            className="cancel-button"
             onClick={onCancel}
-            disabled={loading}
+            className="cancel-button"
           >
             {cancelText}
           </button>
           <button
-            type="button"
-            className={`confirm-button ${variant}`}
             onClick={onConfirm}
-            disabled={loading}
+            className={`confirm-button ${confirmVariant}`}
           >
-            {loading ? (
-              <>
-                <span className="loading-spinner-small"></span>
-                Processing...
-              </>
-            ) : (
-              confirmText
-            )}
+            {confirmText}
           </button>
         </div>
       </div>

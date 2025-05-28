@@ -6,6 +6,7 @@ import {
   MaxLength,
   IsOptional,
   IsEnum,
+  IsObject,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { UserRole } from '../../../enums/user-role.enum';
@@ -60,4 +61,12 @@ export class RegisterUserDto {
   @IsOptional()
   @IsEnum(UserRole, { message: 'Invalid role provided' })
   role?: UserRole;
+
+  /**
+   * Custom field data - optional
+   * Contains values for admin-defined custom fields
+   */
+  @IsOptional()
+  @IsObject()
+  customFieldData?: Record<string, any>;
 } 

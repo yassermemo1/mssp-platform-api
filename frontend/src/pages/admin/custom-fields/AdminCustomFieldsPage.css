@@ -1,0 +1,137 @@
+.admin-custom-fields-page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 3rem;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 0.5rem;
+}
+
+.page-description {
+  font-size: 1.1rem;
+  color: #718096;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+.entity-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.entity-type-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.entity-type-card:hover {
+  border-color: #3182ce;
+  box-shadow: 0 4px 12px rgba(49, 130, 206, 0.15);
+  transform: translateY(-2px);
+}
+
+.entity-type-card:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.entity-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.entity-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.entity-description {
+  color: #718096;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.card-action {
+  color: #3182ce;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.help-section {
+  margin-top: 3rem;
+}
+
+.help-card {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.help-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.help-card p {
+  color: #4a5568;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.help-card ul {
+  color: #4a5568;
+  padding-left: 1.5rem;
+}
+
+.help-card li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .admin-custom-fields-page {
+    padding: 1rem;
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
+  }
+  
+  .entity-type-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .entity-type-card {
+    padding: 1.25rem;
+  }
+  
+  .help-card {
+    padding: 1.5rem;
+  }
+} 

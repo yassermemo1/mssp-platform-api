@@ -62,6 +62,14 @@ export class User {
   isActive: boolean;
 
   /**
+   * Custom field data stored as JSONB
+   * Stores values for admin-defined custom fields
+   * Format: { "field_name": "field_value", ... }
+   */
+  @Column({ type: 'jsonb', nullable: true })
+  customFieldData: Record<string, any> | null;
+
+  /**
    * Timestamp when the user was created
    */
   @CreateDateColumn({
