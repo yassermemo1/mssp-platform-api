@@ -3,6 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ClientsService } from './clients.service';
 import { ClientsController } from './clients.controller';
 import { Client } from '../../entities/client.entity';
+import { Contract } from '../../entities/contract.entity';
+import { ServiceScope } from '../../entities/service-scope.entity';
 
 /**
  * ClientsModule
@@ -13,8 +15,8 @@ import { Client } from '../../entities/client.entity';
  */
 @Module({
   imports: [
-    // Register the Client entity with TypeORM for this module
-    TypeOrmModule.forFeature([Client]),
+    // Register the Client, Contract, and ServiceScope entities with TypeORM for this module
+    TypeOrmModule.forFeature([Client, Contract, ServiceScope]),
   ],
   controllers: [ClientsController],
   providers: [ClientsService],

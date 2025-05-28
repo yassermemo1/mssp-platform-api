@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { UserRole } from '../../types/auth';
 import './Navigation.css';
 
 /**
@@ -13,6 +14,16 @@ const Navigation: React.FC = () => {
 
   const isActive = (path: string): boolean => {
     return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
+
+  const canAccessAdmin = (): boolean => {
+    if (!user) return false;
+    return [UserRole.ADMIN, UserRole.MANAGER].includes(user.role);
+  };
+
+  const canAccessAssets = (): boolean => {
+    if (!user) return false;
+    return [UserRole.ADMIN, UserRole.MANAGER, UserRole.ASSET_MANAGER].includes(user.role);
   };
 
   return (
@@ -35,6 +46,68 @@ const Navigation: React.FC = () => {
           >
             Clients
           </Link>
+          
+          {canAccessAdmin() && (
+            <>
+              <div className="nav-divider"></div>
+              <span className="nav-section-label">Admin</span>
+              <Link 
+                to="/admin/contracts" 
+                className={isActive('/admin/contracts') ? 'nav-link active' : 'nav-link'}
+              >
+                Contracts
+              </Link>
+              <Link 
+                to="/admin/proposals" 
+                className={isActive('/admin/proposals') ? 'nav-link active' : 'nav-link'}
+              >
+                Proposal Dashboard
+              </Link>
+              <Link 
+                to="/admin/proposals/list" 
+                className={isActive('/admin/proposals/list') ? 'nav-link active' : 'nav-link'}
+              >
+                Proposals
+              </Link>
+              <Link 
+                to="/admin/license-dashboard" 
+                className={isActive('/admin/license-dashboard') ? 'nav-link active' : 'nav-link'}
+              >
+                License Dashboard
+              </Link>
+              <Link 
+                to="/admin/license-pools" 
+                className={isActive('/admin/license-pools') ? 'nav-link active' : 'nav-link'}
+              >
+                License Pools
+              </Link>
+              <Link 
+                to="/admin/financials/transactions" 
+                className={isActive('/admin/financials/transactions') ? 'nav-link active' : 'nav-link'}
+              >
+                Financial Transactions
+              </Link>
+            </>
+          )}
+
+          {canAccessAssets() && (
+            <>
+              <div className="nav-divider"></div>
+              <span className="nav-section-label">Hardware</span>
+              <Link 
+                to="/admin/hardware-assets" 
+                className={isActive('/admin/hardware-assets') ? 'nav-link active' : 'nav-link'}
+              >
+                Hardware Assets
+              </Link>
+              <Link 
+                to="/admin/hardware-assignments" 
+                className={isActive('/admin/hardware-assignments') ? 'nav-link active' : 'nav-link'}
+              >
+                Assignments
+              </Link>
+            </>
+          )}
         </div>
 
         <div className="nav-user">

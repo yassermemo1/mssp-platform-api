@@ -94,8 +94,17 @@ export class AuthService {
   }
 
   /**
+   * Normalize email address to lowercase and trim whitespace
+   * @param email - Raw email address
+   * @returns string - Normalized email address
+   */
+  private normalizeEmail(email: string): string {
+    return email.toLowerCase().trim();
+  }
+
+  /**
    * Validate user credentials and return user if valid
-   * @param email - User's email
+   * @param email - User's email (should be normalized)
    * @param password - User's password
    * @returns Promise<User | null> - User entity if valid, null otherwise
    */
@@ -129,8 +138,11 @@ export class AuthService {
     const { email, password } = loginUserDto;
 
     try {
+      // Normalize email for consistent handling
+      const normalizedEmail = this.normalizeEmail(email);
+      
       // Validate user credentials
-      const user = await this.validateUser(email, password);
+      const user = await this.validateUser(normalizedEmail, password);
 
       if (!user) {
         // Generic error message to avoid revealing whether email exists
@@ -165,9 +177,12 @@ export class AuthService {
   async register(registerUserDto: RegisterUserDto): Promise<Partial<User>> {
     const { firstName, lastName, email, password, role } = registerUserDto;
 
+    // Normalize email for consistent handling
+    const normalizedEmail = this.normalizeEmail(email);
+
     // Check if user with this email already exists
     const existingUser = await this.userRepository.findOne({
-      where: { email: email.toLowerCase() },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
@@ -184,7 +199,7 @@ export class AuthService {
       const newUser = this.userRepository.create({
         firstName: firstName.trim(),
         lastName: lastName.trim(),
-        email: email.toLowerCase().trim(),
+        email: normalizedEmail,
         password: hashedPassword,
         role: role || UserRole.ENGINEER, // Default to ENGINEER if no role provided
         isActive: true,
@@ -208,12 +223,12 @@ export class AuthService {
 
   /**
    * Find user by email (for authentication purposes)
-   * @param email - User's email address
+   * @param email - User's email address (should be normalized)
    * @returns Promise<User | null> - User entity or null if not found
    */
   async findUserByEmail(email: string): Promise<User | null> {
     return await this.userRepository.findOne({
-      where: { email: email.toLowerCase() },
+      where: { email: this.normalizeEmail(email) },
     });
   }
 

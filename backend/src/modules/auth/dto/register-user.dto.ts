@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsEnum,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { UserRole } from '../../../enums/user-role.enum';
 
 /**
@@ -20,6 +21,7 @@ export class RegisterUserDto {
   @IsNotEmpty({ message: 'First name is required' })
   @IsString({ message: 'First name must be a string' })
   @MaxLength(100, { message: 'First name cannot exceed 100 characters' })
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
   firstName: string;
 
   /**
@@ -28,14 +30,17 @@ export class RegisterUserDto {
   @IsNotEmpty({ message: 'Last name is required' })
   @IsString({ message: 'Last name must be a string' })
   @MaxLength(100, { message: 'Last name cannot exceed 100 characters' })
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
   lastName: string;
 
   /**
    * User's email address
+   * Automatically normalized to lowercase and trimmed
    */
   @IsNotEmpty({ message: 'Email is required' })
   @IsEmail({}, { message: 'Please provide a valid email address' })
   @MaxLength(255, { message: 'Email cannot exceed 255 characters' })
+  @Transform(({ value }) => typeof value === 'string' ? value.toLowerCase().trim() : value)
   email: string;
 
   /**

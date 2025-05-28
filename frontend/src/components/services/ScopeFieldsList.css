@@ -1,0 +1,313 @@
+/* ScopeFieldsList.css */
+
+.scope-fields-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Field Item Styles */
+.field-item {
+  display: flex;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.field-item:hover {
+  border-color: #007bff;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+}
+
+.field-content {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Field Header */
+.field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.field-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.field-icon {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+
+.field-names {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.field-label {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  line-height: 1.2;
+}
+
+.field-name {
+  font-size: 12px;
+  color: #6c757d;
+  font-family: 'Courier New', monospace;
+  background-color: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.field-badges {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.field-type-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.required-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Field Details */
+.field-details {
+  margin-top: 8px;
+}
+
+.field-description {
+  margin: 0 0 12px 0;
+  color: #495057;
+  font-size: 14px;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.field-properties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.property {
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.property strong {
+  color: #495057;
+  font-weight: 500;
+}
+
+/* Field Actions */
+.field-actions {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-left: 1px solid #e9ecef;
+  min-width: 120px;
+}
+
+.reorder-actions {
+  display: flex;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.reorder-button {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  color: #6c757d;
+  transition: all 0.2s;
+  border-right: 1px solid #e9ecef;
+}
+
+.reorder-button:last-child {
+  border-right: none;
+}
+
+.reorder-button:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  color: #007bff;
+}
+
+.reorder-button:disabled {
+  color: #ced4da;
+  cursor: not-allowed;
+}
+
+.main-actions {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.edit-button,
+.delete-button {
+  flex: 1;
+  padding: 16px 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.edit-button {
+  color: #007bff;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.edit-button:hover {
+  background-color: #e3f2fd;
+  color: #0056b3;
+}
+
+.delete-button {
+  color: #dc3545;
+}
+
+.delete-button:hover {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .field-item {
+    flex-direction: column;
+  }
+
+  .field-actions {
+    flex-direction: row;
+    min-width: auto;
+    border-left: none;
+    border-top: 1px solid #e9ecef;
+  }
+
+  .reorder-actions {
+    border-bottom: none;
+    border-right: 1px solid #e9ecef;
+  }
+
+  .reorder-button {
+    border-right: 1px solid #e9ecef;
+    border-bottom: none;
+  }
+
+  .main-actions {
+    flex-direction: row;
+    flex: 2;
+  }
+
+  .edit-button {
+    border-bottom: none;
+    border-right: 1px solid #e9ecef;
+  }
+
+  .field-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .field-badges {
+    align-self: flex-start;
+  }
+
+  .field-properties {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .field-content {
+    padding: 16px;
+  }
+
+  .field-title {
+    gap: 8px;
+  }
+
+  .field-icon {
+    font-size: 18px;
+    width: 20px;
+  }
+
+  .field-label {
+    font-size: 15px;
+  }
+
+  .field-name {
+    font-size: 11px;
+  }
+
+  .reorder-button,
+  .edit-button,
+  .delete-button {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+}
+
+/* Focus Styles for Accessibility */
+.reorder-button:focus,
+.edit-button:focus,
+.delete-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: -2px;
+  z-index: 1;
+}
+
+/* Animation for smooth interactions */
+.field-item {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

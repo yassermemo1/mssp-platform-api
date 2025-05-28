@@ -7,6 +7,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Client } from '../../entities/client.entity';
+import { Contract } from '../../entities/contract.entity';
+import { ServiceScope } from '../../entities/service-scope.entity';
 import { CreateClientDto, UpdateClientDto } from './dto';
 import { User } from '../../entities/user.entity';
 
@@ -21,6 +23,10 @@ export class ClientsService {
   constructor(
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
+    @InjectRepository(Contract)
+    private readonly contractRepository: Repository<Contract>,
+    @InjectRepository(ServiceScope)
+    private readonly serviceScopeRepository: Repository<ServiceScope>,
   ) {}
 
   /**
@@ -219,6 +225,41 @@ export class ClientsService {
       }
       
       this.logger.error(`Failed to delete client with ID: ${id}`, error.stack);
+      throw error;
+    }
+  }
+
+  /**
+   * Get all service scopes for a specific client
+   * @param clientId - UUID of the client
+   * @returns Promise<ServiceScope[]> - Array of service scopes for the client
+   * @throws NotFoundException if client doesn't exist
+   */
+  async getServiceScopes(clientId: string): Promise<ServiceScope[]> {
+    this.logger.log(`Retrieving service scopes for client: ${clientId}`);
+
+    try {
+      // First, verify the client exists
+      await this.findOne(clientId);
+
+      // Find all service scopes for this client through their contracts
+      const serviceScopes = await this.serviceScopeRepository
+        .createQueryBuilder('serviceScope')
+        .leftJoinAndSelect('serviceScope.service', 'service')
+        .leftJoinAndSelect('serviceScope.contract', 'contract')
+        .where('contract.clientId = :clientId', { clientId })
+        .andWhere('serviceScope.isActive = :isActive', { isActive: true })
+        .orderBy('serviceScope.createdAt', 'DESC')
+        .getMany();
+
+      this.logger.log(`Retrieved ${serviceScopes.length} service scopes for client: ${clientId}`);
+      return serviceScopes;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      
+      this.logger.error(`Failed to retrieve service scopes for client: ${clientId}`, error.stack);
       throw error;
     }
   }

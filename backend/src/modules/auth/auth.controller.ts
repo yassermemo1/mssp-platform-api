@@ -30,7 +30,11 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(
-    @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    @Body(new ValidationPipe({ 
+      whitelist: true, 
+      forbidNonWhitelisted: true,
+      transform: true // Enable transformation for @Transform decorators
+    }))
     registerUserDto: RegisterUserDto,
   ): Promise<{ message: string; user: Partial<User> }> {
     const user = await this.authService.register(registerUserDto);
@@ -51,7 +55,11 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
-    @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    @Body(new ValidationPipe({ 
+      whitelist: true, 
+      forbidNonWhitelisted: true,
+      transform: true // Enable transformation for @Transform decorators
+    }))
     loginUserDto: LoginUserDto,
   ): Promise<LoginResponse> {
     return await this.authService.login(loginUserDto);

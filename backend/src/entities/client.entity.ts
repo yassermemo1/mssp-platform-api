@@ -5,8 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  OneToMany,
 } from 'typeorm';
-import { ClientStatus } from '../enums/client-status.enum';
+import { ClientStatus, ClientSourceType } from '../enums';
+import { Contract } from './contract.entity';
+import { ClientHardwareAssignment } from './client-hardware-assignment.entity';
 
 /**
  * Client Entity
@@ -69,6 +72,17 @@ export class Client {
   status: ClientStatus;
 
   /**
+   * Source of the client acquisition (optional)
+   * Tracks how the client was acquired or the source of the relationship
+   */
+  @Column({
+    type: 'enum',
+    enum: ClientSourceType,
+    nullable: true,
+  })
+  clientSource: ClientSourceType | null;
+
+  /**
    * Timestamp when the client was created
    */
   @CreateDateColumn({
@@ -86,6 +100,20 @@ export class Client {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updatedAt: Date;
+
+  /**
+   * One-to-many relationship with Contract
+   * A client can have multiple contracts
+   */
+  @OneToMany(() => Contract, (contract) => contract.client)
+  contracts: Contract[];
+
+  /**
+   * One-to-many relationship with ClientHardwareAssignment
+   * A client can have multiple hardware assignments
+   */
+  @OneToMany(() => ClientHardwareAssignment, (assignment) => assignment.client)
+  hardwareAssignments: ClientHardwareAssignment[];
 
   /**
    * Virtual property to check if client is active

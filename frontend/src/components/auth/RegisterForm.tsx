@@ -78,10 +78,10 @@ const RegisterForm: React.FC = () => {
 
     try {
       await apiService.post('/auth/register', {
-        email: credentials.email,
+        email: credentials.email.toLowerCase().trim(),
         password: credentials.password,
-        firstName: credentials.firstName,
-        lastName: credentials.lastName,
+        firstName: credentials.firstName.trim(),
+        lastName: credentials.lastName.trim(),
         role: credentials.role,
       });
 

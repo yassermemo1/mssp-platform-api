@@ -5,7 +5,16 @@ import { validationSchema } from './config/validation.schema';
 import { databaseConfig } from './config/database.config';
 import { jwtConfig } from './config/jwt.config';
 import { ConfigDemoService } from './config/config-demo.service';
-import { User, Client } from '../entities';
+import { 
+  User, 
+  Client, 
+  Service, 
+  Contract, 
+  ServiceScope, 
+  Proposal,
+  HardwareAsset,
+  ClientHardwareAssignment
+} from '../entities';
 
 /**
  * CoreModule - Global module for shared application-wide services
@@ -15,6 +24,7 @@ import { User, Client } from '../entities';
  * - Global ConfigService availability
  * - Custom configuration factories for organized config access
  * - TypeORM database connection and entity registration
+ * - All MSSP platform entities (Users, Clients, Services, Contracts, ServiceScopes, Proposals, Hardware Assets, Hardware Assignments)
  */
 @Global()
 @Module({
@@ -55,7 +65,7 @@ import { User, Client } from '../entities';
         username: configService.get('database.username'),
         password: configService.get('database.password'),
         database: configService.get('database.name'),
-        entities: [User, Client],
+        entities: [User, Client, Service, Contract, ServiceScope, Proposal, HardwareAsset, ClientHardwareAssignment],
         synchronize: process.env.NODE_ENV === 'development', // Only in development
         logging: process.env.NODE_ENV === 'development',
         migrations: ['dist/migrations/*{.ts,.js}'],
@@ -66,7 +76,7 @@ import { User, Client } from '../entities';
     }),
 
     // Register entities for dependency injection
-    TypeOrmModule.forFeature([User, Client]),
+    TypeOrmModule.forFeature([User, Client, Service, Contract, ServiceScope, Proposal, HardwareAsset, ClientHardwareAssignment]),
   ],
   providers: [ConfigDemoService],
   exports: [ConfigDemoService, TypeOrmModule],

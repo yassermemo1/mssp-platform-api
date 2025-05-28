@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsString,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 /**
  * Data Transfer Object for user login
@@ -11,9 +12,11 @@ import {
 export class LoginUserDto {
   /**
    * User's email address
+   * Automatically normalized to lowercase and trimmed
    */
   @IsNotEmpty({ message: 'Email is required' })
   @IsEmail({}, { message: 'Please provide a valid email address' })
+  @Transform(({ value }) => typeof value === 'string' ? value.toLowerCase().trim() : value)
   email: string;
 
   /**

@@ -131,4 +131,23 @@ export class ClientsController {
 
     return this.clientsService.remove(id, req.user);
   }
+
+  /**
+   * Get all service scopes for a specific client
+   * GET /clients/:id/service-scopes
+   * Requires: Any authenticated user
+   * Returns: 200 OK with array of service scopes for the client
+   */
+  @Get(':id/service-scopes')
+  @HttpCode(HttpStatus.OK)
+  async getServiceScopes(
+    @Param('id') id: string,
+    @Request() req: any,
+  ): Promise<any[]> {
+    this.logger.log(
+      `GET /clients/${id}/service-scopes - Retrieving service scopes for client by user: ${req.user.email}`,
+    );
+
+    return this.clientsService.getServiceScopes(id);
+  }
 } 

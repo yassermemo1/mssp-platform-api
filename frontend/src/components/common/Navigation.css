@@ -33,6 +33,7 @@
 .nav-links {
   display: flex;
   gap: 30px;
+  align-items: center;
 }
 
 .nav-link {
@@ -56,6 +57,23 @@
   color: white;
   background: rgba(255, 255, 255, 0.2);
   font-weight: 600;
+}
+
+/* Admin Section Styles */
+.nav-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.3);
+  margin: 0 10px;
+}
+
+.nav-section-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-right: 10px;
 }
 
 .nav-user {
@@ -101,12 +119,25 @@
   }
   
   .nav-links {
-    gap: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   
   .nav-link {
     font-size: 13px;
     padding: 6px 12px;
+  }
+  
+  .nav-divider {
+    display: none;
+  }
+  
+  .nav-section-label {
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
+    font-size: 10px;
   }
   
   .user-info {

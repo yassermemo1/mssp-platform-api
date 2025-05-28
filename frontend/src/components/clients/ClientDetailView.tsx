@@ -4,12 +4,14 @@ import { Client, ClientStatus } from '../../types/client';
 import { ApiError, UserRole } from '../../types/auth';
 import { apiService } from '../../services/apiService';
 import { useAuth } from '../../contexts/AuthContext';
+import ConfirmationModal from '../common/ConfirmationModal';
+import Toast from '../common/Toast';
 import './ClientDetailView.css';
 
 /**
  * ClientDetailView Component
  * Displays detailed information for a single client
- * Includes navigation options and role-based edit access
+ * Includes navigation options, role-based edit access, and delete functionality
  */
 const ClientDetailView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +21,22 @@ const ClientDetailView: React.FC = () => {
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    loading: boolean;
+  }>({
+    isOpen: false,
+    loading: false
+  });
+  const [toast, setToast] = useState<{
+    isVisible: boolean;
+    message: string;
+    type: 'success' | 'error' | 'info' | 'warning';
+  }>({
+    isVisible: false,
+    message: '',
+    type: 'success'
+  });
 
   /**
    * Check if user has permission to edit clients
@@ -26,6 +44,15 @@ const ClientDetailView: React.FC = () => {
   const canEditClient = (): boolean => {
     if (!user) return false;
     return [UserRole.ADMIN, UserRole.MANAGER, UserRole.ACCOUNT_MANAGER].includes(user.role);
+  };
+
+  /**
+   * Check if user has permission to delete clients
+   * Only ADMIN and MANAGER roles can delete clients
+   */
+  const canDeleteClient = (): boolean => {
+    if (!user) return false;
+    return [UserRole.ADMIN, UserRole.MANAGER].includes(user.role);
   };
 
   /**
@@ -77,6 +104,96 @@ const ClientDetailView: React.FC = () => {
    */
   const handleBackToList = () => {
     navigate('/clients');
+  };
+
+  /**
+   * Open delete confirmation modal
+   */
+  const handleDeleteClick = () => {
+    setDeleteModal({
+      isOpen: true,
+      loading: false
+    });
+  };
+
+  /**
+   * Close delete confirmation modal
+   */
+  const handleDeleteCancel = () => {
+    setDeleteModal({
+      isOpen: false,
+      loading: false
+    });
+  };
+
+  /**
+   * Confirm and execute client deletion
+   */
+  const handleDeleteConfirm = async () => {
+    if (!client) return;
+
+    setDeleteModal(prev => ({ ...prev, loading: true }));
+
+    try {
+      await apiService.delete(`/clients/${client.id}`);
+      
+      // Show success toast
+      showToast(`Client "${client.companyName}" has been deleted successfully.`, 'success');
+      
+      // Close modal
+      setDeleteModal({
+        isOpen: false,
+        loading: false
+      });
+
+      // Navigate back to clients list after a short delay
+      setTimeout(() => {
+        navigate('/clients');
+      }, 1500);
+      
+    } catch (err) {
+      const apiError = err as ApiError;
+      let errorMessage = 'Failed to delete client';
+      
+      if (apiError.statusCode === 403) {
+        errorMessage = 'You do not have permission to delete clients';
+      } else if (apiError.statusCode === 404) {
+        errorMessage = 'Client not found - it may have already been deleted';
+        // Navigate back to clients list if client was already deleted
+        setTimeout(() => {
+          navigate('/clients');
+        }, 2000);
+      } else {
+        errorMessage = apiError.message || errorMessage;
+      }
+
+      showToast(errorMessage, 'error');
+      console.error('Error deleting client:', err);
+      
+      // Close modal even on error
+      setDeleteModal({
+        isOpen: false,
+        loading: false
+      });
+    }
+  };
+
+  /**
+   * Show toast notification
+   */
+  const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning') => {
+    setToast({
+      isVisible: true,
+      message,
+      type
+    });
+  };
+
+  /**
+   * Hide toast notification
+   */
+  const hideToast = () => {
+    setToast(prev => ({ ...prev, isVisible: false }));
   };
 
   /**
@@ -168,9 +285,20 @@ const ClientDetailView: React.FC = () => {
           <button onClick={handleBackToList} className="back-button">
             Back to Clients
           </button>
+          <button 
+            onClick={() => navigate(`/admin/clients/${client.id}/licenses`)} 
+            className="view-licenses-button"
+          >
+            View Licenses
+          </button>
           {canEditClient() && (
             <button onClick={handleEditClient} className="edit-button">
               Edit Client
+            </button>
+          )}
+          {canDeleteClient() && (
+            <button onClick={handleDeleteClick} className="delete-button">
+              Delete Client
             </button>
           )}
         </div>
@@ -250,14 +378,35 @@ const ClientDetailView: React.FC = () => {
         </div>
       </div>
 
-      {!canEditClient() && (
+      {(!canEditClient() && !canDeleteClient()) && (
         <div className="permission-notice">
           <p>
-            <strong>Note:</strong> You do not have permission to edit client information. 
+            <strong>Note:</strong> You do not have permission to edit or delete client information. 
             Contact your administrator if you need to make changes.
           </p>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={deleteModal.isOpen}
+        title="Delete Client"
+        message={`Are you sure you want to delete client "${client.companyName}"? This action cannot be undone and will permanently remove all client data.`}
+        confirmText="Delete Client"
+        cancelText="Cancel"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        loading={deleteModal.loading}
+        variant="danger"
+      />
+
+      {/* Toast Notifications */}
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+      />
     </div>
   );
 };

@@ -49,7 +49,13 @@ const LoginForm: React.FC = () => {
     }
 
     try {
-      await login(credentials);
+      // Normalize email before sending to backend
+      const normalizedCredentials = {
+        ...credentials,
+        email: credentials.email.toLowerCase().trim()
+      };
+      
+      await login(normalizedCredentials);
       // Login successful - AuthContext will handle state updates
       // Navigation will be handled by the routing logic
     } catch (err) {

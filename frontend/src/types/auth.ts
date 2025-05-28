@@ -36,6 +36,7 @@ export enum UserRole {
   MANAGER = 'manager',
   PROJECT_MANAGER = 'project_manager',
   ACCOUNT_MANAGER = 'account_manager',
+  ASSET_MANAGER = 'asset_manager',
   ENGINEER = 'engineer',
 }
 
