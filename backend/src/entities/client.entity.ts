@@ -61,6 +61,18 @@ export class Client {
   industry: string | null;
 
   /**
+   * Company website URL (optional)
+   */
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  website: string | null;
+
+  /**
+   * Additional notes about the client (optional)
+   */
+  @Column({ type: 'text', nullable: true })
+  notes: string | null;
+
+  /**
    * Current status of the client relationship
    */
   @Column({

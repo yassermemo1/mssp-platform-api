@@ -19,7 +19,7 @@ import {
   ExpirationDashboardDto,
   ServiceGaugeMetricDto,
 } from './dto';
-import { TicketStatus, TicketPriority, ContractStatus, ServiceCategory, ServiceMetricType } from '../../enums';
+import { TicketStatus, TicketPriority, ContractStatus, ServiceCategory, ServiceMetricType, ClientStatus } from '../../enums';
 
 /**
  * Dashboard Data Service
@@ -514,7 +514,7 @@ export class DashboardDataService {
   private async calculateCurrentSubscriptionSummary(): Promise<any> {
     // Fallback calculation if no snapshots exist
     const activeClients = await this.clientRepository.count({
-      where: { status: 'ACTIVE' },
+      where: { status: ClientStatus.ACTIVE },
     });
 
     const activeContracts = await this.contractRepository.count({

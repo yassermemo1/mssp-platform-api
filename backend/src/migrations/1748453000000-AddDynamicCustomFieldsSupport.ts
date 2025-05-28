@@ -47,13 +47,15 @@ export class AddDynamicCustomFieldsSupport1748453000000 implements MigrationInte
             CONSTRAINT "PK_custom_field_values" PRIMARY KEY ("id")
         )`);
         
-        // Add customFieldData JSONB columns to target entities
-        // Note: clients table already has this column, so we skip it
-        await queryRunner.query(`ALTER TABLE "contracts" ADD "customFieldData" jsonb`);
-        await queryRunner.query(`ALTER TABLE "proposals" ADD "customFieldData" jsonb`);
-        await queryRunner.query(`ALTER TABLE "service_scopes" ADD "customFieldData" jsonb`);
-        await queryRunner.query(`ALTER TABLE "services" ADD "customFieldData" jsonb`);
-        await queryRunner.query(`ALTER TABLE "users" ADD "customFieldData" jsonb`);
+        // Add customFieldData JSONB columns to target entities (check if they exist first)
+        const tables = ['contracts', 'proposals', 'service_scopes', 'services', 'users'];
+        
+        for (const table of tables) {
+            const hasColumn = await queryRunner.hasColumn(table, "customFieldData");
+            if (!hasColumn) {
+                await queryRunner.query(`ALTER TABLE "${table}" ADD "customFieldData" jsonb`);
+            }
+        }
         
         // Create indexes for custom field definitions
         await queryRunner.query(`CREATE UNIQUE INDEX "IDX_custom_field_definitions_entity_name" ON "custom_field_definitions" ("entityType", "name")`);
@@ -83,13 +85,15 @@ export class AddDynamicCustomFieldsSupport1748453000000 implements MigrationInte
         await queryRunner.query(`DROP INDEX "public"."IDX_custom_field_definitions_entity_type"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_custom_field_definitions_entity_name"`);
         
-        // Remove customFieldData columns from target entities
-        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "customFieldData"`);
-        await queryRunner.query(`ALTER TABLE "services" DROP COLUMN "customFieldData"`);
-        await queryRunner.query(`ALTER TABLE "service_scopes" DROP COLUMN "customFieldData"`);
-        await queryRunner.query(`ALTER TABLE "proposals" DROP COLUMN "customFieldData"`);
-        await queryRunner.query(`ALTER TABLE "contracts" DROP COLUMN "customFieldData"`);
-        // Note: We don't drop from clients as it was already there
+        // Remove customFieldData columns from target entities (check if they exist first)
+        const tables = ['users', 'services', 'service_scopes', 'proposals', 'contracts'];
+        
+        for (const table of tables) {
+            const hasColumn = await queryRunner.hasColumn(table, "customFieldData");
+            if (hasColumn) {
+                await queryRunner.query(`ALTER TABLE "${table}" DROP COLUMN "customFieldData"`);
+            }
+        }
         
         // Drop tables
         await queryRunner.query(`DROP TABLE "custom_field_values"`);

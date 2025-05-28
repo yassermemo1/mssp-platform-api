@@ -19,4 +19,8 @@ export { ClientSubscriptionSnapshot } from './client-subscription-snapshot.entit
 
 // Custom Fields Entities
 export { CustomFieldDefinition } from './custom-field-definition.entity';
-export { CustomFieldValue } from './custom-field-value.entity'; 
+export { CustomFieldValue } from './custom-field-value.entity';
+
+// Integration Entities
+export { ExternalDataSource } from '../modules/integrations/entities/external-data-source.entity';
+export { DataSourceQuery } from '../modules/integrations/entities/data-source-query.entity'; 

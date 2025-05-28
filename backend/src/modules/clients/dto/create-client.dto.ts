@@ -7,6 +7,7 @@ import {
   MaxLength,
   MinLength,
   IsObject,
+  IsUrl,
 } from 'class-validator';
 import { ClientStatus } from '../../../enums/client-status.enum';
 
@@ -63,6 +64,21 @@ export class CreateClientDto {
   @IsString()
   @MaxLength(100, { message: 'Industry must not exceed 100 characters' })
   industry?: string;
+
+  /**
+   * Company website URL - optional
+   */
+  @IsOptional()
+  @IsUrl({}, { message: 'Website must be a valid URL' })
+  @MaxLength(255, { message: 'Website URL must not exceed 255 characters' })
+  website?: string;
+
+  /**
+   * Additional notes about the client - optional
+   */
+  @IsOptional()
+  @IsString()
+  notes?: string;
 
   /**
    * Client status - optional, defaults to PROSPECT if not provided

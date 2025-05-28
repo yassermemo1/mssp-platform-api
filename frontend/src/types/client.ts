@@ -19,6 +19,8 @@ export interface Client {
   contactPhone?: string;
   address?: string;
   industry?: string;
+  website?: string;
+  notes?: string;
   status: ClientStatus;
   customFieldData?: Record<string, any>;
   createdAt: string;
@@ -32,6 +34,8 @@ export interface CreateClientDto {
   contactPhone?: string;
   address?: string;
   industry?: string;
+  website?: string;
+  notes?: string;
   status?: ClientStatus;
   customFieldData?: Record<string, any>;
 }
@@ -43,6 +47,8 @@ export interface UpdateClientDto {
   contactPhone?: string;
   address?: string;
   industry?: string;
+  website?: string;
+  notes?: string;
   status?: ClientStatus;
   customFieldData?: Record<string, any>;
 } 

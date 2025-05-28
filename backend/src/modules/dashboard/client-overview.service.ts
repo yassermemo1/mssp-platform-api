@@ -99,7 +99,7 @@ export class ClientOverviewService {
    * Get client profile information
    */
   private async getClientProfile(client: Client): Promise<any> {
-    // Get account manager if assigned
+    // Get account manager assignment
     const accountManagerAssignment = await this.teamAssignmentRepository.findOne({
       where: {
         clientId: client.id,
@@ -124,7 +124,7 @@ export class ClientOverviewService {
       accountManager: accountManagerAssignment
         ? {
             id: accountManagerAssignment.user.id,
-            name: accountManagerAssignment.user.name,
+            name: `${accountManagerAssignment.user.firstName} ${accountManagerAssignment.user.lastName}`,
             email: accountManagerAssignment.user.email,
           }
         : undefined,
@@ -259,11 +259,11 @@ export class ClientOverviewService {
     const assignments = await this.hardwareAssignmentRepository.find({
       where: { clientId },
       relations: ['hardwareAsset'],
-      order: { assignedDate: 'DESC' },
+      order: { assignmentDate: 'DESC' },
     });
 
     const activeAssignments = assignments.filter(
-      a => a.status === HardwareAssignmentStatus.ASSIGNED
+      a => a.status === HardwareAssignmentStatus.ACTIVE
     );
 
     // Group by asset type
@@ -276,10 +276,10 @@ export class ClientOverviewService {
     // Get recent assignments
     const recentAssignments = assignments.slice(0, 5).map(a => ({
       id: a.id,
-      assetName: a.hardwareAsset.assetName,
+      assetName: a.hardwareAsset.deviceName || a.hardwareAsset.assetTag,
       assetType: a.hardwareAsset.assetType,
       serialNumber: a.hardwareAsset.serialNumber,
-      assignedDate: a.assignedDate,
+      assignedDate: a.assignmentDate,
       status: a.hardwareAsset.status,
     }));
 
@@ -298,7 +298,7 @@ export class ClientOverviewService {
     const teamAssignments = await this.teamAssignmentRepository.find({
       where: { clientId, isActive: true },
       relations: ['user'],
-      order: { isPrimary: 'DESC', createdAt: 'ASC' },
+      order: { priority: 'ASC', createdAt: 'ASC' },
     });
 
     // Group by assignment role
@@ -310,11 +310,11 @@ export class ClientOverviewService {
     // Map team members
     const teamMembers = teamAssignments.map(a => ({
       id: a.user.id,
-      name: a.user.name,
+      name: `${a.user.firstName} ${a.user.lastName}`,
       email: a.user.email,
       role: a.user.role,
       assignmentRole: a.assignmentRole,
-      isPrimary: a.isPrimary,
+      priority: a.priority,
       assignedDate: a.createdAt,
     }));
 

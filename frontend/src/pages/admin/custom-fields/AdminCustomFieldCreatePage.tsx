@@ -3,7 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
   CustomFieldEntityType, 
   ENTITY_TYPE_DISPLAY_NAMES,
-  CreateCustomFieldDefinitionDto 
+  CreateCustomFieldDefinitionDto,
+  UpdateCustomFieldDefinitionDto
 } from '../../../types/customFields';
 import { ApiError } from '../../../types/auth';
 import { apiService } from '../../../services/apiService';
@@ -28,12 +29,12 @@ const AdminCustomFieldCreatePage: React.FC = () => {
   /**
    * Handle form submission
    */
-  const handleSubmit = async (data: CreateCustomFieldDefinitionDto) => {
+  const handleSubmit = async (data: CreateCustomFieldDefinitionDto | UpdateCustomFieldDefinitionDto) => {
     try {
       setLoading(true);
       setError(null);
       
-      await apiService.createCustomFieldDefinition(data);
+      await apiService.createCustomFieldDefinition(data as CreateCustomFieldDefinitionDto);
       
       // Navigate back to the entity-specific page
       navigate(`/admin/settings/custom-fields/${currentEntityType}`);

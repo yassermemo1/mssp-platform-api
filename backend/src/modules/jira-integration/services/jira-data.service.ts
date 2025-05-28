@@ -285,10 +285,10 @@ export class JiraDataService {
     let resolutionCount = 0;
 
     const priorityCounts = {
-      critical: { total: 0, breached: 0, responseTime: 0, resolutionTime: 0 },
-      high: { total: 0, breached: 0, responseTime: 0, resolutionTime: 0 },
-      medium: { total: 0, breached: 0, responseTime: 0, resolutionTime: 0 },
-      low: { total: 0, breached: 0, responseTime: 0, resolutionTime: 0 }
+      critical: { total: 0, breached: 0, averageResponseTime: 0, averageResolutionTime: 0 },
+      high: { total: 0, breached: 0, averageResponseTime: 0, averageResolutionTime: 0 },
+      medium: { total: 0, breached: 0, averageResponseTime: 0, averageResolutionTime: 0 },
+      low: { total: 0, breached: 0, averageResponseTime: 0, averageResolutionTime: 0 }
     };
 
     tickets.forEach(issue => {
@@ -312,7 +312,7 @@ export class JiraDataService {
 
         if (cycle.elapsedTime?.millis) {
           totalResponseTime += cycle.elapsedTime.millis;
-          priorityCounts[priorityKey].responseTime += cycle.elapsedTime.millis;
+          priorityCounts[priorityKey].averageResponseTime += cycle.elapsedTime.millis;
         }
       }
 
@@ -329,7 +329,7 @@ export class JiraDataService {
 
         if (cycle.elapsedTime?.millis) {
           totalResolutionTime += cycle.elapsedTime.millis;
-          priorityCounts[priorityKey].resolutionTime += cycle.elapsedTime.millis;
+          priorityCounts[priorityKey].averageResolutionTime += cycle.elapsedTime.millis;
         }
       }
     });
@@ -344,8 +344,8 @@ export class JiraDataService {
     Object.keys(priorityCounts).forEach(key => {
       const counts = priorityCounts[key];
       if (counts.total > 0) {
-        counts.responseTime = counts.responseTime / counts.total;
-        counts.resolutionTime = counts.resolutionTime / counts.total;
+        counts.averageResponseTime = counts.averageResponseTime / counts.total;
+        counts.averageResolutionTime = counts.averageResolutionTime / counts.total;
       }
     });
 

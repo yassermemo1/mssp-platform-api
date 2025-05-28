@@ -12,7 +12,7 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
-import { SampleApiService } from '../services/sample-api.service';
+import { SampleApiService, JsonPlaceholderPost, JsonPlaceholderUser } from '../services/sample-api.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../auth/guards/roles.guard';
 import { Roles } from '../../auth/decorators/roles.decorator';

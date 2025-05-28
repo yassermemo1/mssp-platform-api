@@ -6,14 +6,14 @@ import { BaseIntegrationService } from './base-integration.service';
 import { IntegrationConfigService } from './integration-config.service';
 
 // Sample API response interfaces
-interface JsonPlaceholderPost {
+export interface JsonPlaceholderPost {
   userId: number;
   id: number;
   title: string;
   body: string;
 }
 
-interface JsonPlaceholderUser {
+export interface JsonPlaceholderUser {
   id: number;
   name: string;
   username: string;

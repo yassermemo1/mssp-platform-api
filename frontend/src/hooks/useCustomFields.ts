@@ -164,12 +164,12 @@ export const useCustomFields = ({
           if (isNaN(Number(value))) {
             newErrors[definition.name] = 'Please enter a valid number';
           }
-          break;
-
-        case CustomFieldType.PERCENTAGE:
-          const percentValue = Number(value);
-          if (percentValue < 0 || percentValue > 100) {
-            newErrors[definition.name] = 'Percentage must be between 0 and 100';
+          // Additional validation for percentage
+          if (definition.fieldType === CustomFieldType.PERCENTAGE) {
+            const percentValue = Number(value);
+            if (percentValue < 0 || percentValue > 100) {
+              newErrors[definition.name] = 'Percentage must be between 0 and 100';
+            }
           }
           break;
       }

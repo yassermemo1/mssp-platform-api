@@ -10,6 +10,8 @@ interface ConfirmationModalProps {
   confirmText?: string;
   cancelText?: string;
   confirmVariant?: 'primary' | 'danger';
+  loading?: boolean;
+  variant?: 'danger' | 'warning' | 'info';
 }
 
 /**
@@ -25,18 +27,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   confirmText = 'Confirm',
   cancelText = 'Cancel',
   confirmVariant = 'primary',
+  loading = false,
+  variant,
 }) => {
-  if (!isOpen) return null;
-
-  /**
-   * Handle backdrop click
-   */
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onCancel();
-    }
-  };
-
   /**
    * Handle escape key
    */
@@ -57,6 +50,17 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       document.body.style.overflow = 'unset';
     };
   }, [isOpen, onCancel]);
+
+  if (!isOpen) return null;
+
+  /**
+   * Handle backdrop click
+   */
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onCancel();
+    }
+  };
 
   return (
     <div className="confirmation-modal-overlay" onClick={handleBackdropClick}>
@@ -86,8 +90,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <button
             onClick={onConfirm}
             className={`confirm-button ${confirmVariant}`}
+            disabled={loading}
           >
-            {confirmText}
+            {loading ? 'Processing...' : confirmText}
           </button>
         </div>
       </div>

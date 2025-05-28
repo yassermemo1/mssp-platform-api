@@ -13,7 +13,13 @@ import {
   ServiceScope, 
   Proposal,
   HardwareAsset,
-  ClientHardwareAssignment
+  ClientHardwareAssignment,
+  FinancialTransaction,
+  ClientTeamAssignment,
+  CustomFieldDefinition,
+  CustomFieldValue,
+  ExternalDataSource,
+  DataSourceQuery
 } from '../entities';
 
 /**
@@ -65,8 +71,8 @@ import {
         username: configService.get('database.username'),
         password: configService.get('database.password'),
         database: configService.get('database.name'),
-        entities: [User, Client, Service, Contract, ServiceScope, Proposal, HardwareAsset, ClientHardwareAssignment],
-        synchronize: process.env.NODE_ENV === 'development', // Only in development
+        entities: [User, Client, Service, Contract, ServiceScope, Proposal, HardwareAsset, ClientHardwareAssignment, FinancialTransaction, ClientTeamAssignment, CustomFieldDefinition, CustomFieldValue, ExternalDataSource, DataSourceQuery],
+        synchronize: false, // Disable synchronization to prevent enum conflicts
         logging: process.env.NODE_ENV === 'development',
         migrations: ['dist/migrations/*{.ts,.js}'],
         migrationsTableName: 'migrations',
@@ -76,7 +82,7 @@ import {
     }),
 
     // Register entities for dependency injection
-    TypeOrmModule.forFeature([User, Client, Service, Contract, ServiceScope, Proposal, HardwareAsset, ClientHardwareAssignment]),
+    TypeOrmModule.forFeature([User, Client, Service, Contract, ServiceScope, Proposal, HardwareAsset, ClientHardwareAssignment, FinancialTransaction, ClientTeamAssignment, CustomFieldDefinition, CustomFieldValue, ExternalDataSource, DataSourceQuery]),
   ],
   providers: [ConfigDemoService],
   exports: [ConfigDemoService, TypeOrmModule],
